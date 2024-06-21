@@ -1,0 +1,52 @@
+﻿using DeerCoffeeShop.Domain.Entities.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DeerCoffeeShop.Domain.Entities
+{
+    public class Employee : Entity, ISoftDelete
+    {
+        [Column(Order = 3)]
+        public required string FullName { get; set; }
+        [EmailAddress]
+        [Column(Order = 4)]
+        public required string Email { get; set; }
+        [Column(Order = 5)]
+        [DataType(DataType.Password)]
+        public string? Password { get; set; }
+        [Phone]
+        [Column(Order = 10)]
+        public required string PhoneNumber { get; set; }
+        [DataType(DataType.MultilineText)]
+        [Column(Order = 7)]
+        public required string Address { get; set; }
+        [DataType(DataType.Date)]
+        [Column(Order = 8)]
+        public required DateTime DateOfBirth { get; set; }
+        [DataType(DataType.Date)]
+        [Column(Order = 9)]
+        public DateTime DateJoined { get; set; }
+        [Column(Order = 6)]
+        public required int RoleID { get; set; }
+        [ForeignKey("RoleID")]
+        public virtual Role? Role { get; set; }
+        [Column(Order = 11)]
+        public string? ManagerID { get; set; }
+        [ForeignKey("ManagerID")]
+        public virtual Employee? Manager { get; set; }
+        [Column(Order = 12)]
+        public required bool IsActive { get; set; }
+        public string? NguoiXoaID { get; set; }
+        [ForeignKey("NguoiXoaID")]
+        public virtual Employee? NguoiXoa { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? NgayXoa { get; set; }
+        public bool IsDeleted { get; set; }
+
+        public string? AvatarUrl { get; set; }
+
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryTime { get; set; }
+        public bool IsMailed { get; set; }
+    }
+}
