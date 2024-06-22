@@ -14,6 +14,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift
 {
     public class EmployeeShiftDtoV2 : IMapFrom<Domain.Entities.EmployeeShift>
     {
+        public string ID { get; set; }
         public string RestaurantID { get; set; }
         public ShiftDto Shift { get; set; }
         public DateOnly DateOfWork { get; set; }
@@ -30,13 +31,14 @@ namespace DeerCoffeeShop.Application.EmployeeShift
         public string? Note { get; set; }
         public EmployeeDto Employee { get; set; }
 
-        public static EmployeeShiftDtoV2 Create(string RestaurantID, EmployeeDto employee,
+        public static EmployeeShiftDtoV2 Create(string ID,string RestaurantID, EmployeeDto employee,
              DateOnly dateOfWork, int month, int year, DateTime checkIn, DateTime checkOut, DateTime? actual_CheckIn
             , DateTime? actual_CheckOut, DateTime? totalHours, bool isOnTime, EmployeeShiftStatus status
             , int employeeNote, string? note)
         {
             return new EmployeeShiftDtoV2()
             {
+                ID = ID,
                 Employee = employee,
                 RestaurantID = RestaurantID,
                 DateOfWork = dateOfWork,

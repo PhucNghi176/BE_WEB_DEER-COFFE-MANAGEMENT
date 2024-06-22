@@ -63,10 +63,10 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
         // Get the day of the week as an integer (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
         int dayOfWeek = (int)date.DayOfWeek;
 
-        // Calculate the start of the week (Monday)
-        DateOnly startOfWeek = date.AddDays(-((dayOfWeek == 0 ? 7 : dayOfWeek) - 1));
+        // Calculate the previous Sunday
+        DateOnly startOfWeek = date.AddDays(-dayOfWeek);
 
-        // Add each day of the week to the list
+        // Add each day from the previous Sunday to the next Saturday to the list
         for (int i = 0; i < 7; i++)
         {
             weekDates.Add(startOfWeek.AddDays(i));
@@ -74,6 +74,7 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
 
         return weekDates;
     }
+
 }
 
 

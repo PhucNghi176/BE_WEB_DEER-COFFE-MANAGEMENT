@@ -21,47 +21,41 @@ namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
             _currentUserService = currentUserService;
             _employeeRepository = employeeRepository;
         }
-        public CreateRestaurantCommandHandler() { }
         public async Task<string> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
         {
-            try
+
+            if (await _restaurantRepository.FindAsync(x => x.RestaurantName.Equals(request.RestaurantName) && x.RestaurantChainID.Equals(request.RestaurantChainID), cancellationToken) != null)
+                throw new NotFoundException("dulicate restaurant name in this restaurantChain.");
+            var resChain = await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken);
+            if (resChain == null)
+                throw new NotFoundException("Not found restaurantChain that had been chosen.");
+
+            var emp = await _employeeRepository.FindAsync(x => x.ID.Equals(request.ManagerID), cancellationToken);
+            if (emp.RoleID == 2) //2 là manager đúng hong ta :vv
+                throw new NotFoundException("Not found manager had been chosen.");
+            if (await _restaurantRepository.AnyAsync(x => x.ManagerID.Equals(request.ManagerID), cancellationToken))
+                throw new NotFoundException("Manager had been chosen is manager of another restaurant.");
+            resChain.RestaurantChainTotalBranches += 1;
+            resChain.RestaurantChainTotalEmployees += 1;
+            _restaurantChainRepository.Update(resChain);
+            await _restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            var restaurant = new Restaurant
             {
-                if (await _restaurantRepository.FindAsync(x => x.RestaurantName.Equals(request.RestaurantName) && x.RestaurantChainID.Equals(request.RestaurantChainID), cancellationToken) != null)
-                    throw new DuplicateNameException("dulicate restaurant name in this restaurantChain.");
-                var resChain = await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken);
-                if (resChain == null)
-                    throw new NotFoundException("Not found restaurantChain that had been chosen.");
 
-                var emp = await _employeeRepository.FindAsync(x => x.ID.Equals(request.ManagerID), cancellationToken);
-                if (emp.RoleID == 2) //2 là manager đúng hong ta :vv
-                    throw new NotFoundException("Not found manager had been chosen.");
-                if (await _restaurantRepository.AnyAsync(x => x.ManagerID.Equals(request.ManagerID), cancellationToken))
-                    throw new DuplicateNameException("Manager had been chosen is manager of another restaurant.");
-                resChain.RestaurantChainTotalBranches += 1;
-                resChain.RestaurantChainTotalEmployees += 1;
-                this._restaurantChainRepository.Update(resChain);
-                await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-                var restaurant = new Restaurant
-                {
+                IsDeleted = false,
+                ManagerID = request.ManagerID,
+                NguoiTaoID = _currentUserService.UserId,
+                NgayTao = DateTime.UtcNow,
+                RestaurantAddress = request.RestaurantAddress,
+                RestaurantChainID = request.RestaurantChainID,
+                RestaurantName = request.RestaurantName,
+                TotalEmployees = 1,
+            };
+            _restaurantRepository.Add(restaurant);
+            await _restaurantRepository.UnitOfWork.SaveChangesAsync();
 
-                    IsDeleted = false,
-                    ManagerID = request.ManagerID,
-                    NguoiTaoID = this._currentUserService.UserId,
-                    NgayTao = DateTime.UtcNow,
-                    RestaurantAddress = request.RestaurantAddress,
-                    RestaurantChainID = request.RestaurantChainID,
-                    RestaurantName = request.RestaurantName,
-                    TotalEmployees = 1,
-                };
-                this._restaurantRepository.Add(restaurant);
-                await this._restaurantRepository.UnitOfWork.SaveChangesAsync();
+            return $"Create new restaurantName: {request.RestaurantName} of restaurantChain: {(await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken)).RestaurantChainName} successful.";
 
-                return $"Create new restaurantName: {request.RestaurantName} of restaurantChain: {(await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken)).RestaurantChainName} successful.";
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message}");
-            }
         }
     }
 }

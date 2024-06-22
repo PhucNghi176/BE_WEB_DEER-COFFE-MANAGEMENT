@@ -3,6 +3,7 @@ using DeerCoffeeShop.Domain.Common.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Data;
 using System.Diagnostics;
 
 namespace DeerCoffeeShop.API.Filters
@@ -13,57 +14,55 @@ namespace DeerCoffeeShop.API.Filters
         {
             switch (context.Exception)
             {
-                case ValidationException exception:
-                    foreach (var error in exception.Errors)
+                case ValidationException validationException:
+                    foreach (var error in validationException.Errors)
                     {
                         context.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     }
                     context.Result = new BadRequestObjectResult(new ValidationProblemDetails(context.ModelState))
-                    .AddContextInformation(context);
+                        .AddContextInformation(context);
                     context.ExceptionHandled = true;
                     break;
+
                 case ForbiddenAccessException:
-                    context.Result = new ForbidResult();
-                    context.ExceptionHandled = true;
-                    break;
                 case UnauthorizedAccessException:
                     context.Result = new ForbidResult();
                     context.ExceptionHandled = true;
                     break;
-                case NotFoundException exception:
+
+                case NotFoundException notFoundException:
                     context.Result = new NotFoundObjectResult(new ProblemDetails
                     {
-                        Detail = exception.Message
-                    })
-                    .AddContextInformation(context);
-                    context.ExceptionHandled = true;
-                    break;
-                case FormException exception:
-                    context.Result = new UnprocessableEntityObjectResult(new
-                    {
-                        Status = exception.StatusCode,
-                        Detail = exception.Message,
-                        Data = exception.DataError
+                        Detail = notFoundException.Message
                     })
                         .AddContextInformation(context);
                     context.ExceptionHandled = true;
                     break;
-                case IncorrectPasswordException exception:
-                    context.Result = new BadRequestObjectResult(new ProblemDetails
+
+                case FormException formException:
+                    context.Result = new UnprocessableEntityObjectResult(new
                     {
-                        Detail = exception.Message
-                    }).AddContextInformation(context);
+                        Status = formException.StatusCode,
+                        Detail = formException.Message,
+                        Data = formException.DataError
+                    })
+                        .AddContextInformation(context);
                     context.ExceptionHandled = true;
                     break;
-                case TimeCheckInToSoonException exception:
+
+                case IncorrectPasswordException:
+                case TimeCheckInToSoonException:
+                case DuplicateNameException:
                     context.Result = new BadRequestObjectResult(new ProblemDetails
                     {
-                        Detail = exception.Message
-                    }).AddContextInformation(context);
+                        Detail = context.Exception.Message
+                    })
+                        .AddContextInformation(context);
                     context.ExceptionHandled = true;
                     break;
             }
         }
+
     }
 
     internal static class ProblemDetailsExtensions

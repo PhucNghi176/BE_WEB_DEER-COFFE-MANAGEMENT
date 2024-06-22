@@ -8,6 +8,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift
 {
     public class EmployeeShiftDto() : IMapFrom<Domain.Entities.EmployeeShift>
     {
+        
         public EmployeeDto Employee { get; set; }
         public ShiftDto Shift { get; set; }
         public DateOnly DateOfWork { get; set; }

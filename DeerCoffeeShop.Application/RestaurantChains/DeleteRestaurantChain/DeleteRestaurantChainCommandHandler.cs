@@ -33,7 +33,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.DeleteRestaurantChain
                 var resList = await this._restaurantRepository.FindAllAsync(x => x.RestaurantChainID.Equals(resChain.ID), cancellationToken);
                 foreach (var res in resList)
                 {
-                    _metiator.Send(new DeleteRestaurantCommand(res.ID), cancellationToken);
+                   await _metiator.Send(new DeleteRestaurantCommand(res.ID), cancellationToken);
                 }
                 resChain.NgayXoa = DateTime.UtcNow;
                 resChain.NguoiXoaID = this._currentUserService.UserId;

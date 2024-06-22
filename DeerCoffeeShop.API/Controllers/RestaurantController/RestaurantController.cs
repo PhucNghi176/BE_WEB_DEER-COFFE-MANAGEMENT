@@ -40,7 +40,12 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                         CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return Ok(new JsonResponse<string>(result));
+            var response = new
+            {
+                Message = "Create Successfully",
+                Data = result
+            };
+            return Ok(response);
         }
 
         // GET api/<RestaurantController>
