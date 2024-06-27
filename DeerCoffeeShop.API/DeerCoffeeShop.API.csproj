@@ -11,6 +11,7 @@
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+		<PackageReference Include="dotenv.net" Version="3.2.0" />
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
@@ -29,8 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="haarcascade_frontalface_default.xml"
-				 					CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="haarcascade_frontalface_default.xml" CopyToOutputDirectory="PreserveNewest" />
 		<ProjectReference Include="..\DeerCoffeeShop.Application\DeerCoffeeShop.Application.csproj" />
 		<ProjectReference Include="..\DeerCoffeeShop.Domain\DeerCoffeeShop.Domain.csproj" />
 		<ProjectReference Include="..\DeerCoffeeShop.Infrastructure\DeerCoffeeShop.Infrastructure.csproj" />

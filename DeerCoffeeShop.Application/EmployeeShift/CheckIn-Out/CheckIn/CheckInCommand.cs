@@ -1,4 +1,6 @@
-﻿using DeerCoffeeShop.Application.Common.Interfaces;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using DeerCoffeeShop.Application.Common.Interfaces;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Enums;
@@ -25,6 +27,7 @@ internal class CheckInCommandHandler(IEmployeeShiftRepository employeeShiftRepos
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
     private readonly IFaceDetectionRepository _faceDetectionRepository = faceDetectionRepository;
     private readonly IAttdenceRepository _attdenceRepository = attdenceRepository;
+    Cloudinary cloudinary = new(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
     private readonly string[] _rootPath = Directory.GetDirectories(Directory.GetCurrentDirectory() + "/TrainedFaces/");
     public async Task<string> Handle(CheckInCommand request, CancellationToken cancellationToken)
     {
@@ -36,7 +39,9 @@ internal class CheckInCommandHandler(IEmployeeShiftRepository employeeShiftRepos
         #region Check Shift
         var DateOfWork = DateOnly.FromDateTime(request.CheckIn);
         var empShift = await _employeeShiftRepository.CheckShiftEmployee(EmployeeID, DateOfWork, cancellationToken);
-        Console.WriteLine(request.CheckIn.Subtract(empShift.CheckIn.Value).TotalHours.ToString());
+        var uploadResult = await UploadEmployeeImage(request.Image);
+        if (uploadResult == null)
+            throw new Exception("File upload failed!");
         if (empShift != null && request.CheckIn.Subtract(empShift.CheckIn.Value).TotalHours > -1)
         {
 
@@ -45,7 +50,7 @@ internal class CheckInCommandHandler(IEmployeeShiftRepository employeeShiftRepos
 
             empShift.Actual_CheckIn = request.CheckIn;
             var attendence = await _attdenceRepository.FindAsync(x => x.EmployeeShiftID == empShift.ID, cancellationToken);
-            attendence.EmployeePictureUrlCheckIn = "test";
+            attendence.EmployeePictureUrlCheckIn = uploadResult.Url.ToString();
             _employeeShiftRepository.Update(empShift);
 
 
@@ -67,10 +72,13 @@ internal class CheckInCommandHandler(IEmployeeShiftRepository employeeShiftRepos
                 IsEmpty = false,
                 IsReviewRequired = true
             };
+            
+
+
             var attendence = new Attendence
             {
                 EmployeeShiftID = empShift.ID,
-                EmployeePictureUrlCheckIn = "test",
+                EmployeePictureUrlCheckIn = uploadResult.Url.ToString(),
                 EmployeePictureUrlCheckOut = ""
             };
             _attdenceRepository.Add(attendence);
@@ -81,5 +89,30 @@ internal class CheckInCommandHandler(IEmployeeShiftRepository employeeShiftRepos
 
         return await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? $"Check in successfull with EmployeeID: {EmployeeID}" : $"Check in failed with EmployeeID: {EmployeeID}";
     }
+    private async Task<CloudinaryDotNet.Actions.ImageUploadResult> UploadEmployeeImage(IFormFile imageFile)
+    {
+        using (var stream = imageFile.OpenReadStream())
+        {
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(imageFile.FileName, stream),
+                UseFilename = true,
+                UniqueFilename = false,
+                Folder = "EmployeeCheckIn",
+                Overwrite = true
+            };
 
+            try
+            {
+                return await cloudinary.UploadAsync(uploadParams);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as necessary
+                Console.WriteLine($"File upload error: {ex.Message}");
+                return null;
+            }
+        }
+
+    }
 }
