@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using DeerCoffeeShop.API.Configuration;
 using DeerCoffeeShop.API.Filters;
 using DeerCoffeeShop.Application;
@@ -5,6 +6,7 @@ using DeerCoffeeShop.Application;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using DeerCoffeeShop.Infrastructure;
+using dotenv.net;
 using Serilog;
 
 // Create the builder
@@ -30,6 +32,9 @@ builder.Services.ConfigureApiVersioning();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigurationCors();
+DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+Cloudinary cloudinary = new(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+cloudinary.Api.Secure = true;
 //allow all cors
 builder.Services.AddCors(options =>
 {

@@ -73,7 +73,7 @@ public class FaceDetectionRepository : IFaceDetectionRepository
                     var resultRecognized = recognizer.Predict(result);
                     if (resultRecognized.Label != -1)
                     {
-                        string name = "Employee ID: " + labels[resultRecognized.Label];
+                        string name =  labels[resultRecognized.Label];
                         recognizedNames = name;
                     }
                 }

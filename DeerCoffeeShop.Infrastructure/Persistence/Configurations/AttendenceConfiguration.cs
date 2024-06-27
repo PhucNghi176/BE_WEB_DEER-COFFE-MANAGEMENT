@@ -8,10 +8,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Attendence> builder)
         {
-            builder.HasOne(a => a.Employee)
-                .WithMany()
-                .HasForeignKey(a => a.EmployeeShiftID)
-                .OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }

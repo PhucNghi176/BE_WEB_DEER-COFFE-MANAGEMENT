@@ -38,7 +38,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByEmployeeId
                     pageCount: list.PageCount,
                     pageSize: list.PageSize,
                     pageNumber: list.PageNo,
-                    data: list.MapToListEmployeeShiftDto(_mapper, shift, employee)
+                    data: list.MapToListEmployeeShiftDto(_mapper,  employee)
                 );
         }
     }

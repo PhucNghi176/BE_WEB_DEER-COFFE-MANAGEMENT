@@ -14,13 +14,12 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Delete
         {
             var foundObject = await _employeeShiftRepository.FindAsync(x => x.EmployeeID.Equals(request.EmployeeID)
             && x.RestaurantID.Equals(request.RestaurantID)
-            && x.ShiftID == request.ShiftID
-            && (x.NguoiXoaID == null || x.IsDeleted == true)) ?? throw new NotFoundException("None employee shift of restaurant was found!");
+            
+            && x.NguoiXoaID == null) ?? throw new NotFoundException("None employee shift of restaurant was found!");
 
             foundObject.EmployeeID = null;
             foundObject.NguoiXoaID = _currentUserService.UserId;
             foundObject.NgayXoa = DateTime.Now;
-            foundObject.IsDeleted = true;
 
             return await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Xóa thành công" : "Xóa thất bại";
         }

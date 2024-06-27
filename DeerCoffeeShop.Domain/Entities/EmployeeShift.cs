@@ -13,17 +13,14 @@ namespace DeerCoffeeShop.Domain.Entities
         public required string RestaurantID { get; set; }
         [ForeignKey("RestaurantID")]
         public virtual Restaurant Restaurant { get; set; }
-        public required int ShiftID { get; set; }
-        [ForeignKey("ShiftID")]
-        public virtual Shift Shift { get; set; }
         [DataType(DataType.Date)]
         public required DateOnly DateOfWork { get; set; }
         public required int Month { get; set; }
         public required int Year { get; set; }
         [DataType(DataType.Time)]
-        public DateTime CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
         [DataType(DataType.Time)]
-        public DateTime CheckOut { get; set; }
+        public DateTime? CheckOut { get; set; }
         [DataType(DataType.Time)]
         public DateTime? Actual_CheckIn { get; set; }
         [DataType(DataType.Time)]
@@ -40,5 +37,6 @@ namespace DeerCoffeeShop.Domain.Entities
         [ForeignKey("NguoiXoaID")]
         public virtual Employee? NguoiXoa { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public bool IsReviewRequired { get; set; } = false;
     }
 }

@@ -16,7 +16,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
         public async Task<string> Handle(UpdateEmployeeShiftCommand command, CancellationToken cancellationToken)
         {
             var foundObject = await _employeeShiftRepository.FindAsync(x => x.RestaurantID.Equals(command.RestaurantID)
-            && x.ShiftID.Equals(command.ShiftID)
+
             && x.EmployeeID.Equals(command.EmployeeID)
             && x.DateOfWork.Equals(command.DateOfWork)
             , cancellationToken) ?? throw new NotFoundException("Employee shift was not found!");
@@ -27,11 +27,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
             if (!command.ActualCheckIn.HasValue && !command.ActualCheckOut.HasValue)
                 foundObject.Status = Domain.Enums.EmployeeShiftStatus.Absent;
 
-            else if (foundObject.CheckIn.CompareTo(command.ActualCheckIn) < 0)
-                foundObject.Status = Domain.Enums.EmployeeShiftStatus.Late;
 
-            else if (foundObject.CheckOut.CompareTo(command.ActualCheckOut) > 0)
-                foundObject.Status = Domain.Enums.EmployeeShiftStatus.EarlyLeave;
 
             else
                 foundObject.Status = Domain.Enums.EmployeeShiftStatus.OnTime;
@@ -39,7 +35,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
             var totalHour = command.ActualCheckIn - command.ActualCheckOut;
             var employeeNote = command.ActualCheckIn - foundObject.CheckIn;
 
-           // foundObject.TotalHours = foundObject.DateOfWork + totalHour;
+            // foundObject.TotalHours = foundObject.DateOfWork + totalHour;
             foundObject.EmployeeNote = employeeNote.Value.Hours;
             foundObject.Note = command.Note;
 
