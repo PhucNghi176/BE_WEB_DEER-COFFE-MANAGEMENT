@@ -8,7 +8,7 @@ using MediatR;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.GetEmployeeShiftInAWeek;
 
-[Authorize(Roles = "Manager")]
+[Authorize(Roles = "Manager,Employee")]
 public record GetEmployeeShiftInAWeekQuery : IRequest<List<EmployeeShiftDtoV2>>, IQuery
 {
     public DateOnly Date { get; set; }
@@ -24,15 +24,26 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
 
     public async Task<List<EmployeeShiftDtoV2>> Handle(GetEmployeeShiftInAWeekQuery request, CancellationToken cancellationToken)
     {
-
-        var UserID = _currentUserService.UserId;
-        var ManagerIDOfRestaurant = await _restaurantRepository.FindAsync(_ => _.ManagerID == UserID, cancellationToken);
         List<Domain.Entities.EmployeeShift> employeeShifts;
+        var UserID = _currentUserService.UserId;
+        var isManager = await _currentUserService.IsInRoleAsync("Manager");
+        var ManagerIDOfRestaurant = await _restaurantRepository.FindAsync(_ => _.ManagerID == UserID, cancellationToken);
+
 
         if (!request.IsMonth)
         {
             var weekDates = GetWeekDates(request.Date);
-            employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork >= weekDates[0] && x.DateOfWork <= weekDates[weekDates.Count - 1] && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
+            if (isManager)
+            {
+                employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork >= weekDates[0] && x.DateOfWork <= weekDates[weekDates.Count - 1] && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
+            }
+            else
+            {
+                var User = await _employeeRepository.FindAsync(x => x.ID == UserID, cancellationToken);
+                var RestaurantID = await _restaurantRepository.FindAsync(x => x.ManagerID == User.ManagerID, cancellationToken);
+                employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork >= weekDates[0] && x.DateOfWork <= weekDates[weekDates.Count - 1] && x.RestaurantID == RestaurantID.ID && x.EmployeeID == UserID, cancellationToken);
+            }
+
         }
         else
         {
@@ -44,6 +55,12 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
         {
             item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
         }
+        //var task = employeeShifts.Select(async item =>
+        //{
+        //    item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
+        //}
+        // );
+        //await Task.WhenAll(task);
         return _mapper.Map<List<EmployeeShiftDtoV2>>(employeeShifts);
 
     }
