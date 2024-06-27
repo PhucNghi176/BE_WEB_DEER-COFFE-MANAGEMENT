@@ -10,7 +10,6 @@ namespace DeerCoffeeShop.Application.EmployeeShift
     {
         
         public EmployeeDto Employee { get; set; }
-        public ShiftDto Shift { get; set; }
         public DateOnly DateOfWork { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }

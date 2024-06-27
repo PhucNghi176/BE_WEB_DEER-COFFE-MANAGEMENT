@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using DeerCoffeeShop.Application.Common.Interfaces;
 using DeerCoffeeShop.Application.Common.Security;
+using DeerCoffeeShop.Application.Employees;
+using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.GetEmployeeShiftInAWeek;
 
@@ -30,28 +27,24 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
 
         var UserID = _currentUserService.UserId;
         var ManagerIDOfRestaurant = await _restaurantRepository.FindAsync(_ => _.ManagerID == UserID, cancellationToken);
+        List<Domain.Entities.EmployeeShift> employeeShifts;
+
         if (!request.IsMonth)
         {
             var weekDates = GetWeekDates(request.Date);
-            // base on the list then get me all the shift in that week
-            var employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork >= weekDates.First() && x.DateOfWork <= weekDates.Last() && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
-            foreach (var item in employeeShifts)
-            {
-                item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
-            }
-            return employeeShifts.MapToListEmployeeShiftDtoV2(_mapper);
+            employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork >= weekDates[0] && x.DateOfWork <= weekDates[weekDates.Count - 1] && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
         }
         else
         {
-            var employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.Month == request.Date.Month && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
-            foreach (var item in employeeShifts)
-            {
-                item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
-            }
-            return employeeShifts.MapToListEmployeeShiftDtoV2(_mapper);
+            employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.Month == request.Date.Month && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
         }
-        //base on the Date, get all the day in that week
 
+        // Retrieve employee details
+        foreach (var item in employeeShifts)
+        {
+            item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
+        }
+        return _mapper.Map<List<EmployeeShiftDtoV2>>(employeeShifts);
 
     }
 

@@ -34,7 +34,8 @@ namespace DeerCoffeeShop.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IRestaurantChainRepository, RestauranChainRepository>();
             services.AddScoped<IFormRepository, FormRepository>();
-            
+            services.AddScoped<IAttdenceRepository, AttendanceRepository>();
+
             return services;
         }
     }

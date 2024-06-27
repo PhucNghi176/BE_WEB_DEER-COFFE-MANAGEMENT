@@ -1,4 +1,5 @@
 ﻿using DeerCoffeeShop.API.Controllers.ResponseTypes;
+using DeerCoffeeShop.Application.EmployeeShift.CheckIn_Out.CheckIn;
 using DeerCoffeeShop.Application.FaceID.DetectFaceFromImage;
 using DeerCoffeeShop.Application.FaceID.SaveImage;
 using MediatR;
@@ -16,9 +17,9 @@ public class ImageController(ISender sender) : BaseController(sender)
         return Ok(result);
     }
     [HttpPost("detect-image")]
-    public async Task<IActionResult> DetectFaceFromImage([FromForm]DetecFaceFromImageQuery query)
+    public async Task<IActionResult> DetectFaceFromImage([FromForm] CheckInCommand query)
     {
-        var result = await _sender.Send(new DetecFaceFromImageQuery(query.Image));
-        return Ok(result);
+        var response = await _sender.Send(query);
+        return Ok(response);
     }
 }

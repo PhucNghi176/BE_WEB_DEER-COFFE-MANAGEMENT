@@ -2,8 +2,8 @@
 using DeerCoffeeShop.API.Controllers.ResponseTypes;
 using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Application.EmployeeShift;
-using DeerCoffeeShop.Application.EmployeeShift.AssignEmployee;
 using DeerCoffeeShop.Application.EmployeeShift.CheckIn_Out.CheckIn;
+using DeerCoffeeShop.Application.EmployeeShift.CheckIn_Out.CheckOut;
 using DeerCoffeeShop.Application.EmployeeShift.Create;
 using DeerCoffeeShop.Application.EmployeeShift.Delete;
 using DeerCoffeeShop.Application.EmployeeShift.GetAll;
@@ -75,6 +75,37 @@ namespace DeerCoffeeShop.API.Controllers.EmployeeShift
             };
             return Ok(respond);
         }
+        [HttpGet("day")]
+        [ProducesResponseType(typeof(PagedResult<EmployeeShiftDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<JsonResponse<PagedResult<EmployeeShiftDto>>>> GetByDay
+            ([FromQuery] GetEmployeeShiftByDayQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            var list = new List<object>();
+            foreach (var item in result.Data)
+            {
+
+                var testreturn = new
+                {
+                    title = item.Employee.FullName ?? "Not Pick",
+                    start = item.CheckIn,
+                    end = item.CheckOut,
+                    allDay = false,
+                    resource = item
+                };
+                list.Add(testreturn);
+            }
+            var respond = new
+            {
+                Message = "Get successfully",
+                Data = list
+            };
+            return Ok(respond);
+        }
         [HttpDelete]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -106,23 +137,7 @@ namespace DeerCoffeeShop.API.Controllers.EmployeeShift
             return Ok(respond);
         }
 
-        [HttpGet("day")]
-        [ProducesResponseType(typeof(PagedResult<EmployeeShiftDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 
-        public async Task<ActionResult<JsonResponse<PagedResult<EmployeeShiftDto>>>> GetByDay
-            ([FromQuery] GetEmployeeShiftByDayQuery query, CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            var respond = new
-            {
-                Message = "Get successfully",
-                Data = result
-            };
-            return Ok(respond);
-        }
 
         [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
@@ -135,38 +150,22 @@ namespace DeerCoffeeShop.API.Controllers.EmployeeShift
         public async Task<ActionResult<JsonResponse<string>>> Create([FromBody] CreateEmployeeShiftCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return Ok(result);
+            var respond = new
+            {
+                Message = "Create successfully",
+                Data = result
+            };
+            return Ok(respond);
         }
 
-        [HttpPut("assign-employee")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<JsonResponse<string>>> Assign([FromBody] AssignEmployeeToEmployeeShiftCommand command, CancellationToken cancellationToken)
+        [HttpPost("CheckIn")]
+        public async Task<ActionResult<JsonResponse<string>>> CheckIn([FromForm] CheckInCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);
         }
-
-        //[HttpPut("employee-check-in")]
-        //[Produces(MediaTypeNames.Application.Json)]
-        //[ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status201Created)]
-        //[ProducesResponseType(typeof(JsonResponse<string>), StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<ActionResult<JsonResponse<string>>> Update([FromBody] UpdateEmployeeShiftCommand command, CancellationToken cancellationToken)
-        //{
-        //    var result = await _mediator.Send(command, cancellationToken);
-        //    return Ok(result);
-        //}
-        [HttpGet("employee-check-in")]
-        public async Task<ActionResult<JsonResponse<string>>> CheckIn([FromQuery] CheckInCommand command, CancellationToken cancellationToken)
+        [HttpPost("CheckOut")]
+        public async Task<ActionResult<JsonResponse<string>>> CheckOut([FromForm] CheckOutCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);

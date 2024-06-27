@@ -16,12 +16,11 @@ using System.Threading.Tasks;
 namespace DeerCoffeeShop.Application.EmployeeShift.GetByDay
 {
     public class GetEmployeeShiftByDayQueryHandler(IEmployeeShiftRepository employeeShiftRepository, IEmployeeRepository employeeRepository
-                                                , IRestaurantRepository restaurantRepository, IShiftRepostiry shiftRepostiry, IMapper mapper, ICurrentUserService currentUserService) : IRequestHandler<GetEmployeeShiftByDayQuery, PagedResult<EmployeeShiftDto>>
+                                                , IMapper mapper, ICurrentUserService currentUserService) : IRequestHandler<GetEmployeeShiftByDayQuery, PagedResult<EmployeeShiftDto>>
     {
         private readonly IEmployeeShiftRepository _employeeShiftRepository = employeeShiftRepository;
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
-        private readonly IRestaurantRepository _restaurantRepository = restaurantRepository;
-        private readonly IShiftRepostiry _shiftRepository = shiftRepostiry;
+
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IMapper _mapper = mapper;
 
@@ -36,7 +35,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByDay
             foreach (var item in list)
             {
                 item.Employee = await _employeeRepository.FindAsync(x => x.ID.Equals(item.EmployeeID), cancellationToken);
-                item.Shift = await _shiftRepository.FindAsync(x => x.ID == item.ShiftID, cancellationToken);
+
 
             }
 

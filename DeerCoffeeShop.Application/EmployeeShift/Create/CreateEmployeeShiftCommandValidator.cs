@@ -16,30 +16,15 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Create
 
         public void Configure()
         {
-            RuleFor(x => x.RestaurantID)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("Restaurant must not be empty!");
-
-            RuleFor(x => x.ShiftID)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("Shift must not be empty!");
+            
+            
 
             RuleFor(x => x.DateOfWork)
                 .NotEmpty()
                 .NotNull()
                 .WithMessage("Date of work must not be empty!");
 
-            RuleFor(x => x.Month)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("Month must not be empty!");
-
-            RuleFor(x => x.Year)
-              .NotEmpty()
-              .NotNull()
-              .WithMessage("Year must not be empty!");
+            
 
             RuleFor(x => x.CheckIn)
               .NotEmpty()

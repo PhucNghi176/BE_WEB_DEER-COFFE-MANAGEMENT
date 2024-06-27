@@ -307,7 +307,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang1",
-                                   ShiftID = 1,
+                                   
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -321,7 +321,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang2",
-                                   ShiftID = 1,
+                                   
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -335,7 +335,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "3",
                                    RestaurantID = "NhaHang3",
-                                   ShiftID = 1,
+                                   
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -349,7 +349,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang1",
-                                   ShiftID = 2,
+                                   
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,

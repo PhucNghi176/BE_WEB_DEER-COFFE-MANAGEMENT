@@ -13,11 +13,13 @@ namespace DeerCoffeeShop.Application.FaceID.DetectFaceFromImage;
 public record DetecFaceFromImageQuery(IFormFile Image) : IRequest<string>, IQuery
 {
     public IFormFile Image { get; set; } = Image;
+    public string RestaurantID { get; set; }
+    public DateTime CheckInTime { get; set; }
 }
 internal class DetecFaceFromImageQueryHandler : IRequestHandler<DetecFaceFromImageQuery, string>
 {
     private readonly IFaceDetectionRepository _faceDetectionService;
-    private readonly string[] _rootPath = Directory.GetDirectories(Directory.GetCurrentDirectory()+ "/TrainedFaces/");
+    private readonly string[] _rootPath = Directory.GetDirectories(Directory.GetCurrentDirectory() + "/TrainedFaces/");
     public DetecFaceFromImageQueryHandler(IFaceDetectionRepository faceDetectionService)
     {
         _faceDetectionService = faceDetectionService;
@@ -25,7 +27,7 @@ internal class DetecFaceFromImageQueryHandler : IRequestHandler<DetecFaceFromIma
 
     public async Task<string> Handle(DetecFaceFromImageQuery request, CancellationToken cancellationToken)
     {
-        
+
         string result = await _faceDetectionService.DetectFaceFromImage(request.Image, _rootPath);
         return result;
     }
