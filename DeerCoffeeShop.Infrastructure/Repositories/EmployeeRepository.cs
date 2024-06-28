@@ -2,7 +2,6 @@
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using DeerCoffeeShop.Infrastructure.Persistence.Configurations;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeerCoffeeShop.Infrastructure.Repositories;
 
@@ -15,5 +14,5 @@ public class EmployeeRepository(ApplicationDbContext dbContext, IMapper mapper) 
     public string HashPassword(string password)
     => BCrypt.Net.BCrypt.HashPassword(password);
 
-    
+
 }

@@ -2,15 +2,9 @@
 using DeerCoffeeShop.Application.Common.Interfaces;
 using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Application.Common.Security;
-using DeerCoffeeShop.Application.Forms;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Forms.Queries.GetAllPagination;
 [Authorize(Roles = "Admin,Manager")]
@@ -34,11 +28,11 @@ internal class GetAllFormPaginationHandler(ICurrentUserService currentUserServic
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
     public async Task<PagedResult<FormDto>> Handle(GetAllFormPagination request, CancellationToken cancellationToken)
     {
-        var role = await _currentUserService.IsInRoleAsync("Admin");
+        bool role = await _currentUserService.IsInRoleAsync("Admin");
         if (role)
         {
-            var list = await _formRepository.FindAllAsync(x => x.FormType == Domain.Enums.FormTypeEnum.JOB_APPLICATION|| x.FormType == Domain.Enums.FormTypeEnum.ACCEPPTED, request.PageNumber, request.PageSize, cancellationToken);
-            foreach (var item in list)
+            IPagedResult<Form> list = await _formRepository.FindAllAsync(x => x.FormType == Domain.Enums.FormTypeEnum.JOB_APPLICATION || x.FormType == Domain.Enums.FormTypeEnum.ACCEPPTED, request.PageNumber, request.PageSize, cancellationToken);
+            foreach (Form item in list)
             {
                 item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
             }
@@ -52,17 +46,17 @@ internal class GetAllFormPaginationHandler(ICurrentUserService currentUserServic
         }
         else
         {
-            var list = await _formRepository.FindAllAsync(x => x.FormType != Domain.Enums.FormTypeEnum.JOB_APPLICATION && x.FormType != Domain.Enums.FormTypeEnum.ACCEPPTED, request.PageNumber, request.PageSize, cancellationToken);
-            foreach (var item in list)
+            IPagedResult<Form> list = await _formRepository.FindAllAsync(x => x.FormType != Domain.Enums.FormTypeEnum.JOB_APPLICATION && x.FormType != Domain.Enums.FormTypeEnum.ACCEPPTED, request.PageNumber, request.PageSize, cancellationToken);
+            foreach (Form item in list)
             {
                 item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
             }
             return PagedResult<FormDto>.Create(
-                               list.TotalCount, 
-                               list.PageCount, 
-                               list.PageSize, 
-                               list.PageNo, 
-                               list.MapToFormDtoList(_mapper) );
+                               list.TotalCount,
+                               list.PageCount,
+                               list.PageSize,
+                               list.PageNo,
+                               list.MapToFormDtoList(_mapper));
 
 
         }

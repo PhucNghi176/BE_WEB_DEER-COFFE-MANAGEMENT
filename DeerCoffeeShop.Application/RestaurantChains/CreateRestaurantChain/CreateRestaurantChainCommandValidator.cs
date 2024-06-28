@@ -13,13 +13,13 @@ namespace DeerCoffeeShop.Application.RestaurantChains.CreateRestaurantChain
         }
         private void configureValidatorRule()
         {
-            RuleFor(x => x.RestaurantChainHQAddress)
+            _ = RuleFor(x => x.RestaurantChainHQAddress)
                .NotEmpty().NotNull().WithMessage("please fill in the restaurantChainHQAddress");
-            RuleFor(x => x.RestaurantChainName)
+            _ = RuleFor(x => x.RestaurantChainName)
                 .NotNull().NotEmpty().WithMessage("please fill in the restaurantChainName");
-            RuleFor(x => x.RestaurantChain_AdminID)
+            _ = RuleFor(x => x.RestaurantChain_AdminID)
                 .NotEmpty().NotNull().WithMessage("please chose a admin");
-            RuleFor(x => x.RestaurantChainType)
+            _ = RuleFor(x => x.RestaurantChainType)
                 .NotEmpty().NotNull().WithMessage("please chose a restaurnatType");
         }
     }

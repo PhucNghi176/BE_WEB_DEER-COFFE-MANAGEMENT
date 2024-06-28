@@ -15,8 +15,8 @@ namespace DeerCoffeeShop.Application.Restaurants.AddManagerToRestaurant
         }
         private void configuraValidatorRule()
         {
-            RuleFor(x => x.ManagerID).NotEmpty().NotNull().WithMessage("please chose staff.");
-            RuleFor(x => x.resID).NotEmpty().NotNull().WithMessage("please chose restaurant.");
+            _ = RuleFor(x => x.ManagerID).NotEmpty().NotNull().WithMessage("please chose staff.");
+            _ = RuleFor(x => x.resID).NotEmpty().NotNull().WithMessage("please chose restaurant.");
         }
     }
 }

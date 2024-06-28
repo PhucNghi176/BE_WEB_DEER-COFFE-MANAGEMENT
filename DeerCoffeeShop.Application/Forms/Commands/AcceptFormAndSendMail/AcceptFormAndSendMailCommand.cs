@@ -2,11 +2,6 @@
 using DeerCoffeeShop.Application.Utils;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Forms.Commands.AcceptFormAndSendMail;
 
@@ -30,8 +25,8 @@ internal class AcceptFormAndSendMailCommandHandler : IRequestHandler<AcceptFormA
 
     public async Task<string> Handle(AcceptFormAndSendMailCommand request, CancellationToken cancellationToken)
     {
-        var from = await _formRepository.FindAsync(x => x.ID == request.FormID, cancellationToken);
-        var restaurant = await _restaurantRepository.FindAsync(x => x.ID == request.RestaurantID, cancellationToken);
+        Domain.Entities.Form? from = await _formRepository.FindAsync(x => x.ID == request.FormID, cancellationToken);
+        Domain.Entities.Restaurant? restaurant = await _restaurantRepository.FindAsync(x => x.ID == request.RestaurantID, cancellationToken);
         if (from == null)
         {
             return "Form not found";
@@ -45,7 +40,7 @@ internal class AcceptFormAndSendMailCommandHandler : IRequestHandler<AcceptFormA
         from.Date = DateTime.Now;
         await MailUtils.SendEmailAsync(from.Employee.FullName, from.Employee.Email, "Thư mời phỏng vấn", request.Date, restaurant.RestaurantAddress);
         _formRepository.Update(from);
-        await _formRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+        _ = await _formRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         //send mail
 
         return "Check Your Email!";

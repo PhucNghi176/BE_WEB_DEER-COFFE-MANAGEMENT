@@ -12,7 +12,7 @@ namespace DeerCoffeeShop.Application.Shift.Update
 
         public async Task<string> Handle(UpdateShiftCommand request, CancellationToken cancellationToken)
         {
-            var foundObject = await _shiftRepository.FindAsync(x => x.ID == request.shift_id, cancellationToken);
+            Domain.Entities.Shift? foundObject = await _shiftRepository.FindAsync(x => x.ID == request.shift_id, cancellationToken);
             if (foundObject == null)
                 throw new NotFoundException("None shift was found!");
             foundObject.Name = request.shift_name ?? foundObject.Name;

@@ -13,10 +13,10 @@ namespace DeerCoffeeShop.Application.Shift.GetAll
 
         public async Task<PagedResult<ShiftDto>> Handle(GetAllShiftQuery query, CancellationToken cancellationToken)
         {
-            var shiftList = await _shiftRepository.FindAllAsync(x => x.IsActive == true, query.PageNo, query.PageSize, cancellationToken);
-            if (shiftList.TotalCount == 0)
-                throw new NotFoundException("None shift was found!");
-            return PagedResult<ShiftDto>.Create
+            IPagedResult<Domain.Entities.Shift> shiftList = await _shiftRepository.FindAllAsync(x => x.IsActive == true, query.PageNo, query.PageSize, cancellationToken);
+            return shiftList.TotalCount == 0
+                ? throw new NotFoundException("None shift was found!")
+                : PagedResult<ShiftDto>.Create
                 (
                     totalCount: shiftList.TotalCount,
                     pageCount: shiftList.PageCount,

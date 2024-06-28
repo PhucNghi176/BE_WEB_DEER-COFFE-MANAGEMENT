@@ -8,7 +8,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Attendence> builder)
         {
-            
+
         }
     }
 }

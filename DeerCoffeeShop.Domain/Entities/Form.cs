@@ -1,5 +1,4 @@
 ﻿using DeerCoffeeShop.Domain.Entities.Base;
-using DeerCoffeeShop.Domain.Enums;
 
 namespace DeerCoffeeShop.Domain.Entities;
 

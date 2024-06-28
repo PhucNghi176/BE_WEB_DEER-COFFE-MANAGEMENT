@@ -1,16 +1,11 @@
-using CloudinaryDotNet;
 using DeerCoffeeShop.API.Configuration;
 using DeerCoffeeShop.API.Filters;
 using DeerCoffeeShop.Application;
-
-using DeerCoffeeShop.Domain.Entities;
-using DeerCoffeeShop.Domain.Repositories;
 using DeerCoffeeShop.Infrastructure;
-using dotenv.net;
 using Serilog;
 
 // Create the builder
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Configure logging (Serilog)
 builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -23,7 +18,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 // Add services
 builder.Services.AddControllers(opt =>
 {
-    opt.Filters.Add<ExceptionFilter>();
+    _ = opt.Filters.Add<ExceptionFilter>();
 });
 builder.Services.AddApplication(); // Note: 'Configuration' is available on the builder
 builder.Services.ConfigureApplicationSecurity(builder.Configuration);
@@ -32,27 +27,25 @@ builder.Services.ConfigureApiVersioning();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigurationCors();
-DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-Cloudinary cloudinary = new(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-cloudinary.Api.Secure = true;
+
 //allow all cors
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
                builder =>
                {
-                   builder.AllowAnyOrigin()
+                   _ = builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
                });
 });
 // Build the app
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the middleware pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    _ = app.UseDeveloperExceptionPage();
 }
 
 app.UseSerilogRequestLogging();

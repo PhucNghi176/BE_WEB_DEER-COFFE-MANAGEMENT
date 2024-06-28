@@ -1,12 +1,7 @@
 ﻿using DeerCoffeeShop.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Domain.Repositories;
 
-public interface IAttdenceRepository : IEFRepository<Attendence,Attendence>
+public interface IAttdenceRepository : IEFRepository<Attendence, Attendence>
 {
 }

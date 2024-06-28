@@ -13,7 +13,7 @@ namespace DeerCoffeeShop.Application.Restaurants.DeleteRestaurant
         }
         private void configuraValidatorRule()
         {
-            RuleFor(x => x.resID)
+            _ = RuleFor(x => x.resID)
                 .NotEmpty().NotNull().WithMessage("please chose a restaurant.");
         }
 

@@ -12,7 +12,7 @@ namespace DeerCoffeeShop.Application.Shift.Delete
 
         public async Task<string> Handle(DeleteShiftCommand request, CancellationToken cancellationToken)
         {
-            var foundObject = await _shiftRepository.FindAsync(x => x.ID == request.Id, cancellationToken);
+            Domain.Entities.Shift? foundObject = await _shiftRepository.FindAsync(x => x.ID == request.Id, cancellationToken);
             if (foundObject == null)
                 throw new NotFoundException("Shift was not found!");
             foundObject.IsActive = false;

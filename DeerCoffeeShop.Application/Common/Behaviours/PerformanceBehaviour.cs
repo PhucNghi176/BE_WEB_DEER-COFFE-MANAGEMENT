@@ -16,17 +16,17 @@ namespace DeerCoffeeShop.Application.Common.Behaviours
         {
             _timer.Start();
 
-            var response = await next();
+            TResponse? response = await next();
 
             _timer.Stop();
 
-            var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+            long elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
             if (elapsedMilliseconds > 500)
             {
-                var requestName = typeof(TRequest).Name;
-                var userId = currentUserService.UserId ?? string.Empty;
-                var userName = currentUserService.UserName ?? string.Empty;
+                string requestName = typeof(TRequest).Name;
+                string userId = currentUserService.UserId ?? string.Empty;
+                string userName = currentUserService.UserName ?? string.Empty;
 
                 logger.LogWarning("DeerCoffeeShop Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
                     requestName, elapsedMilliseconds, userId, userName, request);

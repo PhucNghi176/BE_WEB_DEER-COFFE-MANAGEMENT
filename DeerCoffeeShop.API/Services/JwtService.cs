@@ -16,7 +16,7 @@ namespace DeerCoffeeShop.API.Services
         }
         public Token CreateToken(string ID, string roles, string refreshToken, string? RestaurantID)
         {
-            var claims = new List<Claim>
+            List<Claim> claims = new()
             {
 
                 new(JwtRegisteredClaimNames.Sub, ID.ToString()),
@@ -27,16 +27,16 @@ namespace DeerCoffeeShop.API.Services
 
 
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Deer Coffee Shop @PI 123abc456 anh iu em"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes("Deer Coffee Shop @PI 123abc456 anh iu em"));
+            SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
+            JwtSecurityToken token = new(
                  issuer: "https://deercoffeesystem.azurewebsites.net/",
                  audience: "api",
                 claims: claims,
                 expires: DateTime.Now.AddYears(1),
                 signingCredentials: creds);
-            var re = new Token
+            Token re = new()
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken

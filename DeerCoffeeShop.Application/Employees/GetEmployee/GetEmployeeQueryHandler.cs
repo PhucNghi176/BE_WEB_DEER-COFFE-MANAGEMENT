@@ -20,12 +20,10 @@ namespace DeerCoffeeShop.Application.Employees.GetEmployee
 
         public async Task<EmployeeDto> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
         {
-            var employee = await _employeeRepository.FindAsync(x => x.ID.Equals(request.EmployeeId), cancellationToken);
-            if (employee == null)
-            {
-                throw new NotFoundException("Employee is not exist !");
-            }
-            return employee.MapToEmployeeDto(_mapper, EmployeeRole.EmployeeRoleDictionary[employee.RoleID]);
+            Domain.Entities.Employee? employee = await _employeeRepository.FindAsync(x => x.ID.Equals(request.EmployeeId), cancellationToken);
+            return employee == null
+                ? throw new NotFoundException("Employee is not exist !")
+                : employee.MapToEmployeeDto(_mapper, EmployeeRole.EmployeeRoleDictionary[employee.RoleID]);
         }
     }
 }

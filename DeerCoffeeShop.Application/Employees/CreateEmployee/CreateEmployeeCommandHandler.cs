@@ -1,7 +1,6 @@
 using DeerCoffeeShop.Application.Utils;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Entities;
-using DeerCoffeeShop.Domain.Enums;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
 using System.Dynamic;
@@ -23,10 +22,10 @@ namespace DeerCoffeeShop.Application.Employees.CreateEmployee
 
         public async Task<string> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
-            var isError = false;
+            bool isError = false;
             dynamic errorData = new ExpandoObject();
-            var existed = await _employeeRepository.FindAsync(x => x.Email == request.Email, cancellationToken);
-            var date = DateTime.Parse(request.DateOfBirth);
+            Employee? existed = await _employeeRepository.FindAsync(x => x.Email == request.Email, cancellationToken);
+            DateTime date = DateTime.Parse(request.DateOfBirth);
             if (existed?.Email != null)
             {
                 errorData.Email = "Email already exist !";
@@ -61,7 +60,7 @@ namespace DeerCoffeeShop.Application.Employees.CreateEmployee
 
             }
 
-            var emp = new Employee
+            Employee emp = new()
             {
                 Address = request.Address,
                 DateOfBirth = DateTime.Parse(request.DateOfBirth),
@@ -74,15 +73,15 @@ namespace DeerCoffeeShop.Application.Employees.CreateEmployee
             };
             _employeeRepository.Add(emp);
 
-            await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            _ = await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            var enity = await _employeeRepository.FindAsync(x => x.Email == request.Email, cancellationToken);
+            Employee? enity = await _employeeRepository.FindAsync(x => x.Email == request.Email, cancellationToken);
 
 
 
             await MailUtils.SendEmailAsync(request.FullName, request.Email, request.Address, request.PhoneNumber, $"{date.Day}/{date.Month}/{date.Year}", "Đơn Xác Nhận Đăng Ký");
 
-            var form = new Domain.Entities.Form
+            Form form = new()
             {
                 EmployeeID = enity?.ID,
                 FormType = Domain.Enums.FormTypeEnum.JOB_APPLICATION,

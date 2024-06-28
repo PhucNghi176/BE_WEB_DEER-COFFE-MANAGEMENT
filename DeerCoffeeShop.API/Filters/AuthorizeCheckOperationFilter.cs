@@ -27,12 +27,9 @@ namespace DeerCoffeeShop.Api.Filters
 
         private static bool HasAuthorize(OperationFilterContext context)
         {
-            if (context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any())
-            {
-                return true;
-            }
-            return context.MethodInfo.DeclaringType != null
-                && context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
+            return context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
+|| (context.MethodInfo.DeclaringType != null
+                && context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any());
         }
     }
 }

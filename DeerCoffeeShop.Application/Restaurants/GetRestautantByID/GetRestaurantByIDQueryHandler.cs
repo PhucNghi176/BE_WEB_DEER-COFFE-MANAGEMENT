@@ -19,12 +19,12 @@ namespace DeerCoffeeShop.Application.Restaurants.GetRestautantByID
 
             try
             {
-                var restaurant = await this._restaurantRepository.FindAsync(x => x.ID.Equals(request.resID) && x.IsDeleted == false, cancellationToken);
-                if (restaurant == null) 
-                    throw new NotFoundException($"Not found restaurant that had ID {request.resID}");
-                return restaurant.MapToRestaurantDTO(_mapper);
+                Domain.Entities.Restaurant? restaurant = await this._restaurantRepository.FindAsync(x => x.ID.Equals(request.resID) && x.IsDeleted == false, cancellationToken);
+                return restaurant == null
+                    ? throw new NotFoundException($"Not found restaurant that had ID {request.resID}")
+                    : restaurant.MapToRestaurantDTO(_mapper);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

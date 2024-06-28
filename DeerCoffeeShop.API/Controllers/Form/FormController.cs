@@ -5,7 +5,6 @@ using DeerCoffeeShop.Application.Forms.Commands.AcceptEmployeeAndGeneratePasswor
 using DeerCoffeeShop.Application.Forms.Commands.AcceptFormAndSendMail;
 using DeerCoffeeShop.Application.Forms.Queries.GetAllPagination;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeerCoffeeShop.API.Controllers.Form;
@@ -18,7 +17,7 @@ public class FormController(ISender sender) : BaseController(sender)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResult<FormDto>>> GetAll([FromQuery] int pageNumber, int PageSize)
     {
-        var result = await _sender.Send(new GetAllFormPagination(pageNumber: pageNumber, PageSize));
+        PagedResult<FormDto> result = await _sender.Send(new GetAllFormPagination(pageNumber: pageNumber, PageSize));
         var response = new
         {
             Message = "Get All Successfully",
@@ -29,7 +28,7 @@ public class FormController(ISender sender) : BaseController(sender)
     [HttpPost]
     public async Task<IActionResult> ApproveForm(AcceptFormAndSendMailCommand command)
     {
-        var resutl = await _sender.Send(new AcceptFormAndSendMailCommand(command.FormID, command.RestaurantID, command.Date));
+        string resutl = await _sender.Send(new AcceptFormAndSendMailCommand(command.FormID, command.RestaurantID, command.Date));
         var response = new
         {
             Message = resutl
@@ -39,7 +38,7 @@ public class FormController(ISender sender) : BaseController(sender)
     [HttpPost("{id}")]
     public async Task<IActionResult> SendPassword([FromRoute] string id)
     {
-        var resutl = await _sender.Send(new AcceptEmployeeAndGeneratePasswordCommand(id));
+        string resutl = await _sender.Send(new AcceptEmployeeAndGeneratePasswordCommand(id));
         var response = new
         {
             Message = resutl

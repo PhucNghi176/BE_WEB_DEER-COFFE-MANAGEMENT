@@ -13,7 +13,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.UpdateRestautantChain
         }
         private void configuraValidatorRule()
         {
-            RuleFor(x => x.resChainID)
+            _ = RuleFor(x => x.resChainID)
                 .NotEmpty().NotNull().WithMessage("please chose an restaurantChain");
         }
     }

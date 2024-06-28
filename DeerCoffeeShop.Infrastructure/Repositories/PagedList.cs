@@ -11,7 +11,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             PageCount = PagedList<T>.GetPageCount(pageSize, TotalCount);
             PageNo = pageNo;
             PageSize = pageSize;
-            var skip = ((PageNo - 1) * PageSize);
+            int skip = (PageNo - 1) * PageSize;
 
             AddRange(
                 [.. source
@@ -39,7 +39,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             {
                 return 0;
             }
-            var remainder = totalCount % pageSize;
+            int remainder = totalCount % pageSize;
             return (totalCount / pageSize) + (remainder == 0 ? 0 : 1);
         }
 
@@ -49,10 +49,10 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             int pageSize,
             CancellationToken cancellationToken = default)
         {
-            var count = await source.CountAsync(cancellationToken);
-            var skip = ((pageNo - 1) * pageSize);
+            int count = await source.CountAsync(cancellationToken);
+            int skip = (pageNo - 1) * pageSize;
 
-            var results = await source
+            List<T> results = await source
                 .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);

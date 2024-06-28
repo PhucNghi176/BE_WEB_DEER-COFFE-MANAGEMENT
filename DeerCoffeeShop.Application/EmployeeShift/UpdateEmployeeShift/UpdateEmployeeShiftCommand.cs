@@ -1,10 +1,5 @@
 ﻿using DeerCoffeeShop.Application.Common.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
 {
@@ -18,9 +13,9 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
 
         public required DateTime DateOfWork { get; set; }
 
-        public DateTime? ActualCheckIn {  get; set; }
+        public DateTime? ActualCheckIn { get; set; }
 
-        public DateTime? ActualCheckOut {  get; set; }
+        public DateTime? ActualCheckOut { get; set; }
 
         public string? Note { get; set; }
     }

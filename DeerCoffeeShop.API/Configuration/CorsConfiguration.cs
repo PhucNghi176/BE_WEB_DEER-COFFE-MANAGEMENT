@@ -4,7 +4,7 @@
     {
         public static IServiceCollection ConfigurationCors(this IServiceCollection services)
         {
-            services.AddCors(o =>
+            _ = services.AddCors(o =>
             {
                 o.AddPolicy("CorsPolicy",
                     builder => builder

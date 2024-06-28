@@ -1,5 +1,4 @@
 using DeerCoffeeShop.Application.Common.Interfaces;
-using DeerCoffeeShop.Application.Common.Security;
 using MediatR;
 
 namespace DeerCoffeeShop.Application.Employees.DeleteEmployee

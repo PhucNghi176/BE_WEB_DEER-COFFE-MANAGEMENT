@@ -13,9 +13,9 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestautantChainByName
         }
         private void configuraValidatorRule()
         {
-            RuleFor(x => x.pageNumber)
+            _ = RuleFor(x => x.pageNumber)
                 .NotEmpty().NotNull().WithMessage("please fill in pageNumber");
-            RuleFor(x => x.pageSize)
+            _ = RuleFor(x => x.pageSize)
                 .NotEmpty().NotNull().WithMessage("please fill in pageSize");
         }
     }

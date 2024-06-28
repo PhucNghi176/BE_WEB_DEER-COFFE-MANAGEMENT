@@ -6,7 +6,6 @@ using Emgu.CV.Face;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
 using System.Drawing;
 
 
@@ -41,39 +40,39 @@ public class FaceDetectionRepository : IFaceDetectionRepository
             }
 
             ContTrain = labels.Count;
-            var filePath = await SaveImage(image, "UnknowEmployee", "UnknowEmployeeFolder");
+            string filePath = await SaveImage(image, "UnknowEmployee", "UnknowEmployeeFolder");
 
             // Take the latest image from the UnknowEmployeeFolder
-            var inputImage = new Image<Bgr, byte>(filePath);
+            Image<Gray, byte> grayImage = new Image<Bgr, byte>(filePath).Convert<Gray, byte>();
             // Convert the IFormFile to Image<Bgr, Byte>
-            Image<Gray, byte> grayImage = inputImage.Convert<Gray, byte>();
+
 
             // Face Detector
-            var facesDetected = faceClassifier.DetectMultiScale(
+            Rectangle[] facesDetected = faceClassifier.DetectMultiScale(
                 grayImage,
                 1.2,
                 10,
                 new Size(20, 20),
                 Size.Empty);
 
-            foreach (var faceRect in facesDetected)
+            foreach (Rectangle faceRect in facesDetected)
             {
                 Image<Gray, byte> result = grayImage.Copy(faceRect).Resize(100, 100, Inter.Cubic);
 
                 if (trainingImages.Count != 0)
                 {
                     // Create the Eigen face recognizer
-                    var recognizer = new EigenFaceRecognizer();
-                    using (var imagesVector = new VectorOfMat(trainingImages.Select(img => img.Mat).ToArray()))
-                    using (var labelsVector = new VectorOfInt(Enumerable.Range(0, labels.Count).ToArray()))
+                    EigenFaceRecognizer recognizer = new();
+                    using (VectorOfMat imagesVector = new(trainingImages.Select(img => img.Mat).ToArray()))
+                    using (VectorOfInt labelsVector = new(Enumerable.Range(0, labels.Count).ToArray()))
                     {
                         recognizer.Train(imagesVector, labelsVector);
                     }
 
-                    var resultRecognized = recognizer.Predict(result);
+                    FaceRecognizer.PredictionResult resultRecognized = recognizer.Predict(result);
                     if (resultRecognized.Label != -1)
                     {
-                        string name =  labels[resultRecognized.Label];
+                        string name = labels[resultRecognized.Label];
                         recognizedNames = name;
                     }
                 }
@@ -82,7 +81,7 @@ public class FaceDetectionRepository : IFaceDetectionRepository
             // Print recognized names
             if (string.IsNullOrEmpty(recognizedNames))
             {
-                return "No faces recognized.";
+                return "";
             }
         }
         catch (Exception ex)
@@ -97,7 +96,7 @@ public class FaceDetectionRepository : IFaceDetectionRepository
     {
         if (!Directory.Exists(employeeFolderPath))
         {
-            Directory.CreateDirectory(employeeFolderPath);
+            _ = Directory.CreateDirectory(employeeFolderPath);
         }
 
         // Check if the image is not empty
@@ -107,12 +106,12 @@ public class FaceDetectionRepository : IFaceDetectionRepository
         }
 
         // Construct the path to save the image inside the employee's folder
-        var uniqueFileName = $"{Guid.NewGuid()}.bmp";
-        var filePath = Path.Combine(employeeFolderPath, uniqueFileName);
+        string uniqueFileName = $"{Guid.NewGuid()}.bmp";
+        string filePath = Path.Combine(employeeFolderPath, uniqueFileName);
 
         try
         {
-            using var stream = new FileStream(filePath, FileMode.Create);
+            using FileStream stream = new(filePath, FileMode.Create);
             await image.CopyToAsync(stream, cancellationToken);
             return filePath;
         }

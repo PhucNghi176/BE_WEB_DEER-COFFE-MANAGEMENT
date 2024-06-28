@@ -12,29 +12,29 @@ namespace DeerCoffeeShop.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            _ = services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options.UseSqlServer(
+                _ = options.UseSqlServer(
                     configuration.GetConnectionString("Azure"),
                     b =>
                     {
-                        b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
-                        b.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                        _ = b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                        _ = b.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                     });
-                options.UseLazyLoadingProxies();
+                _ = options.UseLazyLoadingProxies();
 
 
             });
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<IFaceDetectionRepository,FaceDetectionRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IShiftRepostiry, ShiftRepository>();
-            services.AddScoped<IEmployeeShiftRepository, EmployeeShiftRepository>();
-            services.AddScoped<IRestaurantRepository, RestaurantRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IRestaurantChainRepository, RestauranChainRepository>();
-            services.AddScoped<IFormRepository, FormRepository>();
-            services.AddScoped<IAttdenceRepository, AttendanceRepository>();
+            _ = services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            _ = services.AddScoped<IFaceDetectionRepository, FaceDetectionRepository>();
+            _ = services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            _ = services.AddScoped<IShiftRepostiry, ShiftRepository>();
+            _ = services.AddScoped<IEmployeeShiftRepository, EmployeeShiftRepository>();
+            _ = services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+            _ = services.AddScoped<IRoleRepository, RoleRepository>();
+            _ = services.AddScoped<IRestaurantChainRepository, RestauranChainRepository>();
+            _ = services.AddScoped<IFormRepository, FormRepository>();
+            _ = services.AddScoped<IAttdenceRepository, AttendanceRepository>();
 
             return services;
         }

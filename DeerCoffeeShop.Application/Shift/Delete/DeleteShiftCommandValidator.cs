@@ -11,7 +11,7 @@ namespace DeerCoffeeShop.Application.Shift.Delete
 
         public void Configure()
         {
-            RuleFor(x => x.Id)
+            _ = RuleFor(x => x.Id)
                 .NotEmpty()
                 .NotNull()
                 .WithMessage("Shift must not be empty!");

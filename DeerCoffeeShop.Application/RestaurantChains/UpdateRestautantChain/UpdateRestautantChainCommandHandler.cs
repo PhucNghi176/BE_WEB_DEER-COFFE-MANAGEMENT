@@ -20,7 +20,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.UpdateRestautantChain
         {
             try
             {
-                var resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
+                Domain.Entities.RestaurantChain? resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
                 if (resChain == null)
                     throw new NotFoundException($"Not found restaurantChain ID {request.resChainID}");
                 if (request.RestaurantChain_AdminID != null)
@@ -37,10 +37,10 @@ namespace DeerCoffeeShop.Application.RestaurantChains.UpdateRestautantChain
                 resChain.RestaurantChainType = request.RestaurantChainType ?? resChain.RestaurantChainType;
                 resChain.RestaurantChain_AdminID = request.RestaurantChain_AdminID ?? resChain.RestaurantChain_AdminID;
                 this._restaurantChainRepository.Update(resChain);
-                await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
                 return $"Updated restaurantChain ID {request.resChainID}";
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

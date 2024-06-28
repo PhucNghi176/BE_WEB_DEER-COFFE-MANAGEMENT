@@ -15,7 +15,7 @@ namespace DeerCoffeeShop.API.Filters
             switch (context.Exception)
             {
                 case ValidationException validationException:
-                    foreach (var error in validationException.Errors)
+                    foreach (FluentValidation.Results.ValidationFailure? error in validationException.Errors)
                     {
                         context.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     }

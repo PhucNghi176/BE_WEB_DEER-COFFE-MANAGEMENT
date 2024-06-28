@@ -14,28 +14,28 @@ namespace DeerCoffeeShop.API.Configuration
     {
         public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
         {
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ApiVersionSwaggerGenOptions>();
-            services.AddSwaggerGen(
+            _ = services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ApiVersionSwaggerGenOptions>();
+            _ = services.AddSwaggerGen(
                 options =>
                 {
                     options.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
                     options.SupportNonNullableReferenceTypes();
                     options.CustomSchemaIds(x => x.FullName);
 
-                    var apiXmlFile = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+                    string apiXmlFile = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
                     if (File.Exists(apiXmlFile))
                     {
                         options.IncludeXmlComments(apiXmlFile);
                     }
 
-                    var applicationXmlFile = Path.Combine(AppContext.BaseDirectory, $"{typeof(DependencyInjection).Assembly.GetName().Name}.xml");
+                    string applicationXmlFile = Path.Combine(AppContext.BaseDirectory, $"{typeof(DependencyInjection).Assembly.GetName().Name}.xml");
                     if (File.Exists(applicationXmlFile))
                     {
                         options.IncludeXmlComments(applicationXmlFile);
                     }
                     options.OperationFilter<AuthorizeCheckOperationFilter>();
 
-                    var securityScheme = new OpenApiSecurityScheme()
+                    OpenApiSecurityScheme securityScheme = new()
                     {
                         Name = "Authorization",
                         Description = "Enter a Bearer Token into the `Value` field to have it automatically prefixed with `Bearer ` and used as an `Authorization` header value for requests.",
@@ -57,14 +57,14 @@ namespace DeerCoffeeShop.API.Configuration
                             { securityScheme, Array.Empty<string>() }
                         });
                 });
-            services.AddRouting(options => options.LowercaseUrls = true);
+            _ = services.AddRouting(options => options.LowercaseUrls = true);
             return services;
         }
 
         public static void UseSwashbuckle(this IApplicationBuilder app)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(
+            _ = app.UseSwagger();
+            _ = app.UseSwaggerUI(
                 options =>
                 {
                     options.RoutePrefix = "swagger";
@@ -80,9 +80,9 @@ namespace DeerCoffeeShop.API.Configuration
 
         private static void AddSwaggerEndpoints(IApplicationBuilder app, SwaggerUIOptions options)
         {
-            var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
 
-            foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(o => o.ApiVersion))
+            foreach (ApiVersionDescription? description in provider.ApiVersionDescriptions.OrderByDescending(o => o.ApiVersion))
             {
                 options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"{options.OAuthConfigObject.AppName} {description.GroupName}");
             }
@@ -93,13 +93,13 @@ namespace DeerCoffeeShop.API.Configuration
     {
         public void Apply(OpenApiSchema model, SchemaFilterContext context)
         {
-            var additionalRequiredProps = model.Properties
+            IEnumerable<string> additionalRequiredProps = model.Properties
                 .Where(x => !x.Value.Nullable && !model.Required.Contains(x.Key))
                 .Select(x => x.Key);
 
-            foreach (var propKey in additionalRequiredProps)
+            foreach (string? propKey in additionalRequiredProps)
             {
-                model.Required.Add(propKey);
+                _ = model.Required.Add(propKey);
             }
         }
     }

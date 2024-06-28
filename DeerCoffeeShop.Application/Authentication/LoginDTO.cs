@@ -9,7 +9,7 @@ namespace DeerCoffeeShop.Application.Authentication
     {
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Employee, LoginDTO>();
+            _ = profile.CreateMap<Employee, LoginDTO>();
 
         }
         public string Id { get; set; }

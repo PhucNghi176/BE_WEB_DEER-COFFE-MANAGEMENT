@@ -32,7 +32,7 @@ namespace DeerCoffeeShop.Application.Shift
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Entities.Shift, ShiftDto>();
+            _ = profile.CreateMap<Domain.Entities.Shift, ShiftDto>();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using DeerCoffeeShop.Api.Controllers.ResponseTypes;
 using DeerCoffeeShop.API.Controllers.ResponseTypes;
 using DeerCoffeeShop.Application.Common.Pagination;
-using DeerCoffeeShop.Application.Common.Security;
 using DeerCoffeeShop.Application.RestaurantChains;
 using DeerCoffeeShop.Application.RestaurantChains.CreateRestaurantChain;
 using DeerCoffeeShop.Application.RestaurantChains.DeleteRestaurantChain;
@@ -11,9 +10,7 @@ using DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByID;
 using DeerCoffeeShop.Application.RestaurantChains.GetRestautantChainByName;
 using DeerCoffeeShop.Application.RestaurantChains.InactiveRestaurantChain;
 using DeerCoffeeShop.Application.Restaurants.UpdateRestautant;
-using DeerCoffeeShop.Infrastructure.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -35,7 +32,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                                 CreateRestaurantChainCommand command,
                                                 CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -52,7 +49,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                 [FromRoute] string ID, [FromRoute] int pageNumber, [FromRoute] int pageSize,
                                 CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetRestaurantChainByAdminQuery(pageNumber, pageSize, ID), cancellationToken);
+            PagedResult<RestaurantChainDTO> result = await _mediator.Send(new GetRestaurantChainByAdminQuery(pageNumber, pageSize, ID), cancellationToken);
             var response = new
             {
                 Message = "Query Successful",
@@ -73,7 +70,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                                         [FromRoute] string ID,
                                                         CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetRestaurantChainByIDQuery(ID), cancellationToken);
+            RestaurantChainDTO result = await _mediator.Send(new GetRestaurantChainByIDQuery(ID), cancellationToken);
             var response = new
             {
                 Message = "Query Successful",
@@ -94,7 +91,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                                         [FromRoute] int pageNumber, [FromRoute] int pageSize, [FromRoute] string resName,
                                                         CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetRestautantChainByNameQuery(pageNumber,pageSize,resName), cancellationToken);
+            PagedResult<RestaurantChainDTO> result = await _mediator.Send(new GetRestautantChainByNameQuery(pageNumber, pageSize, resName), cancellationToken);
             var response = new
             {
                 Message = "Query Successful",
@@ -115,7 +112,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                                         [FromRoute] int pageNumber, [FromRoute] int pageSize,
                                                         CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetRestaurantChainByDeactiveQuery(pageNumber, pageSize), cancellationToken);
+            PagedResult<RestaurantChainDTO> result = await _mediator.Send(new GetRestaurantChainByDeactiveQuery(pageNumber, pageSize), cancellationToken);
             var response = new
             {
                 Message = "Query Successful",
@@ -137,7 +134,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                             InactiveRestaurantChainCommand command,
                                             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
         //PUT api/<RestaurantChainController>
@@ -153,7 +150,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
                                             UpdateRestaurantCommand command,
                                             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -169,8 +166,8 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantChainController
         public async Task<ActionResult<JsonResponse<string>>> deleteRestaurantchain(
                                                         DeleteRestaurantChainCommand command,
                                                         CancellationToken cancellationToken = default)
-        { 
-            var result = await _mediator.Send(command, cancellationToken);
+        {
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 

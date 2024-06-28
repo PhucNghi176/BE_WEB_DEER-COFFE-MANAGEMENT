@@ -1,5 +1,5 @@
-﻿using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using DeerCoffeeShop.Application.Common.Interfaces;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
@@ -20,23 +20,23 @@ internal class CheckOutCommandHandler(IEmployeeShiftRepository employeeShiftRepo
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
     private readonly IFaceDetectionRepository _faceDetectionRepository = faceDetectionRepository;
     private readonly IAttdenceRepository _attdenceRepository = attdenceRepository;
-    Cloudinary cloudinary = new(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+    private readonly Cloudinary cloudinary = new("cloudinary://176963282532847:kONanxuhiEwEmJKFPC72M1a2rUs@dmiueqpah");
     private readonly string[] _rootPath = Directory.GetDirectories(Directory.GetCurrentDirectory() + "/TrainedFaces/");
 
     public async Task<string> Handle(CheckOutCommand request, CancellationToken cancellationToken)
     {
-        var EmployeeID = await _faceDetectionRepository.DetectFaceFromImage(request.Image, _rootPath);
+        string EmployeeID = await _faceDetectionRepository.DetectFaceFromImage(request.Image, _rootPath);
         if (!await _employeeRepository.AnyAsync(x => x.ID == EmployeeID, cancellationToken))
             throw new NotFoundException("Employee not found!");
-        var DateOfWork = DateOnly.FromDateTime(request.CheckOut);
-        var empShift = await _employeeShiftRepository.CheckShiftEmployee(EmployeeID, DateOfWork, cancellationToken);
+        DateOnly DateOfWork = DateOnly.FromDateTime(request.CheckOut);
+        Domain.Entities.EmployeeShift empShift = await _employeeShiftRepository.CheckShiftEmployee(EmployeeID, DateOfWork, request.RestaurantID, cancellationToken);
         if (empShift != null)
         {
-            var uploadResult = await UploadEmployeeImage(request.Image);
+            ImageUploadResult uploadResult = await UploadEmployeeImage(request.Image);
             if (uploadResult == null)
                 throw new Exception("File upload failed!");
             empShift.Actual_CheckOut = request.CheckOut;
-            var attendence = await _attdenceRepository.FindAsync(x => x.EmployeeShiftID == empShift.ID, cancellationToken);
+            Domain.Entities.Attendence? attendence = await _attdenceRepository.FindAsync(x => x.EmployeeShiftID == empShift.ID, cancellationToken);
             attendence.EmployeePictureUrlCheckOut = uploadResult.Url.ToString();
             _employeeShiftRepository.Update(empShift);
 
@@ -45,9 +45,9 @@ internal class CheckOutCommandHandler(IEmployeeShiftRepository employeeShiftRepo
     }
     private async Task<CloudinaryDotNet.Actions.ImageUploadResult> UploadEmployeeImage(IFormFile imageFile)
     {
-        using (var stream = imageFile.OpenReadStream())
+        using (Stream stream = imageFile.OpenReadStream())
         {
-            var uploadParams = new ImageUploadParams()
+            ImageUploadParams uploadParams = new()
             {
                 File = new FileDescription(imageFile.FileName, stream),
                 UseFilename = true,

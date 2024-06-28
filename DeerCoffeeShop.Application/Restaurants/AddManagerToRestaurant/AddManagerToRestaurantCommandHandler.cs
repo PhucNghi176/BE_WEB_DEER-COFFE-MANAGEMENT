@@ -19,25 +19,25 @@ namespace DeerCoffeeShop.Application.Restaurants.AddManagerToRestaurant
         {
             try
             {
-                var Employee = await _employeeRepository.FindAsync(x => x.ID == request.ManagerID, cancellationToken) ?? throw new NotFoundException("Employee not found");
-                var Restaurant = await _restaurantRepository.FindAsync(x => x.ID == request.resID, cancellationToken) ?? throw new NotFoundException("Restaurant not found");
-                var isManager = await _restaurantRepository.AnyAsync(x => x.ManagerID == Employee.ID, cancellationToken);
+                Domain.Entities.Employee Employee = await _employeeRepository.FindAsync(x => x.ID == request.ManagerID, cancellationToken) ?? throw new NotFoundException("Employee not found");
+                Domain.Entities.Restaurant Restaurant = await _restaurantRepository.FindAsync(x => x.ID == request.resID, cancellationToken) ?? throw new NotFoundException("Restaurant not found");
+                bool isManager = await _restaurantRepository.AnyAsync(x => x.ManagerID == Employee.ID, cancellationToken);
                 if (isManager)
                 {
-                    return ("Employee is already a manager of another restaurant");
+                    return "Employee is already a manager of another restaurant";
                 }
-                var RestaurantChain = await _restaurantChainRepository.FindAsync(x => x.ID == Restaurant.RestaurantChainID, cancellationToken);
+                Domain.Entities.RestaurantChain? RestaurantChain = await _restaurantChainRepository.FindAsync(x => x.ID == Restaurant.RestaurantChainID, cancellationToken);
                 if (RestaurantChain == null)
                 {
                     throw new NotFoundException("Restaurant Chain not found");
                 }
                 if (Employee.RoleID != 2)
                 {
-                    return ("Employee is not a manager");
+                    return "Employee is not a manager";
                 }
                 Restaurant.ManagerID = Employee.ID;
                 _restaurantRepository.Update(Restaurant);
-                await _restaurantRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await _restaurantRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
                 return "Add manager to restaurant successfully";
             }
             catch (Exception ex)

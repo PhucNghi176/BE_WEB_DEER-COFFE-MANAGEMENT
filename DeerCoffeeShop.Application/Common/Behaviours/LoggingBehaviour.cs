@@ -11,9 +11,9 @@ namespace DeerCoffeeShop.Application.Common.Behaviours
 
         public Task Process(TRequest request, CancellationToken cancellationToken)
         {
-            var requestName = typeof(TRequest).Name;
-            var userId = currentUserService.UserId ?? string.Empty;
-            var userName = currentUserService.UserName ?? string.Empty;
+            string requestName = typeof(TRequest).Name;
+            string userId = currentUserService.UserId ?? string.Empty;
+            string userName = currentUserService.UserName ?? string.Empty;
 
             _logger.LogInformation("TestCA9 Request: {Name} {@UserId} {@UserName} {@Request}",
                 requestName, userId, userName, request);

@@ -3,11 +3,6 @@ using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByDeactive
 {
@@ -24,18 +19,18 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByDeacti
         {
             try
             {
-                var restaurantChain = await this._restaurantChainRepository.FindAllAsync(x => x.IsDeleted == true, pageNo:request.pageNumber, pageSize:request.pageSize, cancellationToken);
-                if (restaurantChain.Count() == 0)
-                    throw new NotFoundException("Not found any resChain had been deleted");
-                return PagedResult<RestaurantChainDTO>.Create(
+                IPagedResult<Domain.Entities.RestaurantChain> restaurantChain = await this._restaurantChainRepository.FindAllAsync(x => x.IsDeleted == true, pageNo: request.pageNumber, pageSize: request.pageSize, cancellationToken);
+                return restaurantChain.Count() == 0
+                    ? throw new NotFoundException("Not found any resChain had been deleted")
+                    : PagedResult<RestaurantChainDTO>.Create(
                                 totalCount: restaurantChain.TotalCount,
                                 pageCount: restaurantChain.PageCount,
                                 pageNumber: restaurantChain.PageNo,
-                                pageSize: restaurantChain.PageSize, 
+                                pageSize: restaurantChain.PageSize,
                                 data: restaurantChain.MapToRestaurantChainDTOList(_mapper)
                     );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

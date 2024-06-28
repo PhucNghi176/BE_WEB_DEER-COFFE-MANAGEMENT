@@ -2,13 +2,7 @@
 using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
-using FluentValidation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByAdmin
 {
@@ -26,10 +20,10 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByAdmin
         {
             try
             {
-                var resChainList = await this._restaurantChinRepository.FindAllAsync(x => x.RestaurantChain_AdminID.Equals(request.adminID) && x.IsDeleted == false, pageNo:request.pageNumber, pageSize:request.pageSize,cancellationToken);
-                if (resChainList.Count() == 0)
-                    throw new NotFoundException($"Not found any restaurantChin was managed by admin ID {request.adminID}");
-                return PagedResult<RestaurantChainDTO>.Create(
+                IPagedResult<Domain.Entities.RestaurantChain> resChainList = await this._restaurantChinRepository.FindAllAsync(x => x.RestaurantChain_AdminID.Equals(request.adminID) && x.IsDeleted == false, pageNo: request.pageNumber, pageSize: request.pageSize, cancellationToken);
+                return resChainList.Count() == 0
+                    ? throw new NotFoundException($"Not found any restaurantChin was managed by admin ID {request.adminID}")
+                    : PagedResult<RestaurantChainDTO>.Create(
                     totalCount: resChainList.TotalCount,
                     pageCount: resChainList.PageCount,
                     pageSize: resChainList.PageSize,
@@ -37,7 +31,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByAdmin
                     data: resChainList.MapToRestaurantChainDTOList(_mapper)
                     );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

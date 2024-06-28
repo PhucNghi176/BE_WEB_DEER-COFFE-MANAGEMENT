@@ -3,7 +3,6 @@ using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System.Data;
 
 namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
 {
@@ -26,11 +25,11 @@ namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
 
             if (await _restaurantRepository.FindAsync(x => x.RestaurantName.Equals(request.RestaurantName) && x.RestaurantChainID.Equals(request.RestaurantChainID), cancellationToken) != null)
                 throw new NotFoundException("dulicate restaurant name in this restaurantChain.");
-            var resChain = await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken);
+            RestaurantChain? resChain = await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken);
             if (resChain == null)
                 throw new NotFoundException("Not found restaurantChain that had been chosen.");
 
-            var emp = await _employeeRepository.FindAsync(x => x.ID.Equals(request.ManagerID), cancellationToken);
+            Employee? emp = await _employeeRepository.FindAsync(x => x.ID.Equals(request.ManagerID), cancellationToken);
             if (emp.RoleID == 2) //2 là manager đúng hong ta :vv
                 throw new NotFoundException("Not found manager had been chosen.");
             if (await _restaurantRepository.AnyAsync(x => x.ManagerID.Equals(request.ManagerID), cancellationToken))
@@ -38,8 +37,8 @@ namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
             resChain.RestaurantChainTotalBranches += 1;
             resChain.RestaurantChainTotalEmployees += 1;
             _restaurantChainRepository.Update(resChain);
-            await _restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            var restaurant = new Restaurant
+            _ = await _restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            Restaurant restaurant = new()
             {
 
                 IsDeleted = false,
@@ -52,7 +51,7 @@ namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
                 TotalEmployees = 1,
             };
             _restaurantRepository.Add(restaurant);
-            await _restaurantRepository.UnitOfWork.SaveChangesAsync();
+            _ = await _restaurantRepository.UnitOfWork.SaveChangesAsync();
 
             return $"Create new restaurantName: {request.RestaurantName} of restaurantChain: {(await _restaurantChainRepository.FindAsync(x => x.ID.Equals(request.RestaurantChainID), cancellationToken)).RestaurantChainName} successful.";
 

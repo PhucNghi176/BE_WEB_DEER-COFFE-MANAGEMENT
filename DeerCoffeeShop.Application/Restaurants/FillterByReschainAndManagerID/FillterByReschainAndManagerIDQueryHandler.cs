@@ -23,20 +23,20 @@ namespace DeerCoffeeShop.Application.Restaurants.FillterByReschainAndManagerID
             {
                 Func<IQueryable<Restaurant>, IQueryable<Restaurant>> querys = query =>
                 {
-                    if (request.resChainID != null) 
+                    if (request.resChainID != null)
                     {
                         query = query.Where(x => x.RestaurantChainID.Equals(request.resChainID) && x.IsDeleted == false);
                     }
-                    if (request.managerID != null) 
+                    if (request.managerID != null)
                     {
                         query = query.Where(x => x.ManagerID.Equals(request.managerID) && x.IsDeleted == false);
                     }
                     return query;
                 };
-                var result = await this._restaurantRepository.FindAllAsync(pageNo:request.pageNumber, pageSize:request.pageSize , querys);
-                if(result.Count() == 0)
-                    throw new NotFoundException($"Not found any restaurant that belong to restaurantChain ID : {request.resChainID} and managed by manager ID :{request.managerID}");
-                return PagedResult<RestaurantDTO>.Create(
+                IPagedResult<Restaurant> result = await this._restaurantRepository.FindAllAsync(pageNo: request.pageNumber, pageSize: request.pageSize, querys);
+                return result.Count() == 0
+                    ? throw new NotFoundException($"Not found any restaurant that belong to restaurantChain ID : {request.resChainID} and managed by manager ID :{request.managerID}")
+                    : PagedResult<RestaurantDTO>.Create(
                     totalCount: result.TotalCount,
                     pageCount: result.PageCount,
                     pageSize: result.PageSize,

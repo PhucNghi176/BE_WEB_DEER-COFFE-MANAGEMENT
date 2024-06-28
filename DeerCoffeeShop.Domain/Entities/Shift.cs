@@ -1,5 +1,4 @@
 ﻿using DeerCoffeeShop.Domain.Entities.Base;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DeerCoffeeShop.Domain.Entities

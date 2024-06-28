@@ -18,17 +18,17 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
 
         public virtual void Remove(TDomain entity)
         {
-            GetSet().Remove((TPersistence)entity);
+            _ = GetSet().Remove((TPersistence)entity);
         }
 
         public virtual void Add(TDomain entity)
         {
-            GetSet().Add((TPersistence)entity);
+            _ = GetSet().Add((TPersistence)entity);
         }
 
         public virtual void Update(TDomain entity)
         {
-            GetSet().Update((TPersistence)entity);
+            _ = GetSet().Update((TPersistence)entity);
         }
 
         public virtual async Task<TDomain?> FindAsync(
@@ -71,7 +71,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             int pageSize,
             CancellationToken cancellationToken = default)
         {
-            var query = QueryInternal(x => true);
+            IQueryable<TPersistence> query = QueryInternal(x => true);
             return await PagedList<TDomain>.CreateAsync(
                 query,
                 pageNo,
@@ -85,7 +85,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             int pageSize,
             CancellationToken cancellationToken = default)
         {
-            var query = QueryInternal(filterExpression);
+            IQueryable<TPersistence> query = QueryInternal(filterExpression);
             return await PagedList<TDomain>.CreateAsync(
                 query,
                 pageNo,
@@ -100,7 +100,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Func<IQueryable<TPersistence>, IQueryable<TPersistence>> queryOptions,
             CancellationToken cancellationToken = default)
         {
-            var query = QueryInternal(filterExpression, queryOptions);
+            IQueryable<TPersistence> query = QueryInternal(filterExpression, queryOptions);
             return await PagedList<TDomain>.CreateAsync(
                 query,
                 pageNo,
@@ -147,7 +147,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Func<IQueryable<TPersistence>, IQueryable<TPersistence>> queryOptions,
             CancellationToken cancellationToken = default)
         {
-            var query = QueryInternal(queryOptions);
+            IQueryable<TPersistence> query = QueryInternal(queryOptions);
             return await PagedList<TDomain>.CreateAsync(
                 query,
                 pageNo,
@@ -171,7 +171,7 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
 
         protected virtual IQueryable<TPersistence> QueryInternal(Expression<Func<TPersistence, bool>>? filterExpression)
         {
-            var queryable = CreateQuery();
+            IQueryable<TPersistence> queryable = CreateQuery();
             if (filterExpression != null)
             {
                 queryable = queryable.Where(filterExpression);
@@ -183,15 +183,15 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Expression<Func<TPersistence, bool>> filterExpression,
             Func<IQueryable<TPersistence>, IQueryable<TResult>> queryOptions)
         {
-            var queryable = CreateQuery();
+            IQueryable<TPersistence> queryable = CreateQuery();
             queryable = queryable.Where(filterExpression);
-            var result = queryOptions(queryable);
+            IQueryable<TResult> result = queryOptions(queryable);
             return result;
         }
 
         protected virtual IQueryable<TPersistence> QueryInternal(Func<IQueryable<TPersistence>, IQueryable<TPersistence>>? queryOptions)
         {
-            var queryable = CreateQuery();
+            IQueryable<TPersistence> queryable = CreateQuery();
             if (queryOptions != null)
             {
                 queryable = queryOptions(queryable);
@@ -218,8 +218,8 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Func<IQueryable<TPersistence>, IQueryable<TPersistence>>? queryOptions = default,
             CancellationToken cancellationToken = default)
         {
-            var queryable = QueryInternal(queryOptions);
-            var projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
+            IQueryable<TPersistence> queryable = QueryInternal(queryOptions);
+            IQueryable<TProjection> projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
             return await projection.ToListAsync(cancellationToken);
         }
 
@@ -229,8 +229,8 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Func<IQueryable<TPersistence>, IQueryable<TPersistence>>? queryOptions = default,
             CancellationToken cancellationToken = default)
         {
-            var queryable = QueryInternal(queryOptions);
-            var projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
+            IQueryable<TPersistence> queryable = QueryInternal(queryOptions);
+            IQueryable<TProjection> projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
             return await PagedList<TProjection>.CreateAsync(
                 projection,
                 pageNo,
@@ -242,8 +242,8 @@ namespace DeerCoffeeShop.Infrastructure.Repositories
             Func<IQueryable<TPersistence>, IQueryable<TPersistence>> queryOptions,
             CancellationToken cancellationToken = default)
         {
-            var queryable = QueryInternal(queryOptions);
-            var projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
+            IQueryable<TPersistence> queryable = QueryInternal(queryOptions);
+            IQueryable<TProjection> projection = queryable.ProjectTo<TProjection>(mapper.ConfigurationProvider);
             return await projection.FirstOrDefaultAsync(cancellationToken);
         }
         public async Task<Dictionary<TKey, TValue>> FindAllToDictionaryAsync<TKey, TValue>(
