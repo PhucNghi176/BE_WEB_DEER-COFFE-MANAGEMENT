@@ -12,6 +12,7 @@ using DeerCoffeeShop.Application.EmployeeShift.GetByDay;
 using DeerCoffeeShop.Application.EmployeeShift.GetByEmployeeId;
 using DeerCoffeeShop.Application.EmployeeShift.GetEmployeeShiftInAWeek;
 using DeerCoffeeShop.Application.EmployeeShift.GetNeededReviewShift;
+using DeerCoffeeShop.Application.EmployeeShift.LockDay;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -86,7 +87,7 @@ public class EmployeeShiftController(ISender sender) : BaseController(sender)
         ([FromQuery] GetEmployeeShiftByDayQuery query, CancellationToken cancellationToken)
     {
         PagedResult<EmployeeShiftDto> result = await _mediator.Send(query, cancellationToken);
-        List<object> list = new();
+        List<object> data = new();
         foreach (EmployeeShiftDto? item in result.Data)
         {
 
@@ -98,12 +99,21 @@ public class EmployeeShiftController(ISender sender) : BaseController(sender)
                 allDay = false,
                 resource = item
             };
-            list.Add(testreturn);
+            data.Add(testreturn);
         }
+        var paging = new
+        {
+            result.TotalCount,
+            result.PageSize,
+            result.PageCount,
+            result.PageNumber,
+            data
+
+        };
         var respond = new
         {
             Message = "Get successfully",
-            Data = list
+            Data = paging
         };
         return Ok(respond);
     }
@@ -189,6 +199,17 @@ public class EmployeeShiftController(ISender sender) : BaseController(sender)
         var respond = new
         {
             Message = "Get successfully",
+            Data = result
+        };
+        return Ok(respond);
+    }
+    [HttpPost("lockday")]
+    public async Task<ActionResult<JsonResponse<string>>> LockDay([FromBody] LockDayCommand command, CancellationToken cancellationToken)
+    {
+        string result = await _mediator.Send(command, cancellationToken);
+        var respond = new
+        {
+            Message = "Lock successfully",
             Data = result
         };
         return Ok(respond);

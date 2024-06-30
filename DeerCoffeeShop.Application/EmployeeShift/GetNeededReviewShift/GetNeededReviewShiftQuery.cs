@@ -6,10 +6,10 @@ using MediatR;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.GetNeededReviewShift;
 
-public class GetNeededReviewShiftQuery(DateOnly date, bool isMonth) : IRequest<List<EmployeeShiftDto>>, IQuery
+public record GetNeededReviewShiftQuery : IRequest<List<EmployeeShiftDto>>, IQuery
 {
-    public DateOnly Date { get; set; } = date;
-    public bool IsMonth { get; set; } = isMonth;
+    public DateOnly Date { get; set; }
+    public bool IsMonth { get; set; }
 }
 
 internal sealed class GetNeededReviewShiftQueryHandler : IRequestHandler<GetNeededReviewShiftQuery, List<EmployeeShiftDto>>

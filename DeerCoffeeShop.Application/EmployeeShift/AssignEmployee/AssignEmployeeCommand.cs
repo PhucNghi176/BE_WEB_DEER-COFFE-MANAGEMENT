@@ -29,6 +29,7 @@ internal sealed class AssginEmployeeCommandHandler : IRequestHandler<AssignEmplo
         Shift.EmployeeID = request.EmployeeID;
         Shift.CheckIn = request.CheckIn;
         Shift.CheckOut = request.CheckOut;
+        Shift.IsReviewRequired = false;
         _employeeShiftRepository.Update(Shift);
         return await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Employee assigned successfully!" : "Employee assigned failed!";
 

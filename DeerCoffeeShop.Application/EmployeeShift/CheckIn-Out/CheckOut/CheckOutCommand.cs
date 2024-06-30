@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using DeerCoffeeShop.Application.Common.Interfaces;
 using DeerCoffeeShop.Domain.Common.Exceptions;
+using DeerCoffeeShop.Domain.Enums;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,35 @@ internal class CheckOutCommandHandler(IEmployeeShiftRepository employeeShiftRepo
             if (uploadResult == null)
                 throw new Exception("File upload failed!");
             empShift.Actual_CheckOut = request.CheckOut;
+            empShift.TotalHours = empShift.Actual_CheckOut.Value.Hour - request.CheckOut.Hour;
+            //check if the check in/out match the actual check in/out
+            if (empShift.CheckIn != null && empShift.CheckOut != null)
+            {
+                empShift.IsOnTime = empShift.CheckIn.Value.Hour == empShift.Actual_CheckIn.Value.Hour && empShift.CheckOut.Value.Hour == request.CheckOut.Hour;
+                //base on the check in/out time, set the status of the employee
+                if (empShift.IsOnTime)
+                {
+                    empShift.Status = EmployeeShiftStatus.OnTime;
+                }
+                else if (empShift.CheckIn.Value.Hour < empShift.Actual_CheckIn.Value.Hour)
+                {
+                    empShift.Status = EmployeeShiftStatus.Late;
+                }
+                else if (empShift.CheckOut.Value.Hour > request.CheckOut.Hour)
+                {
+                    empShift.Status = EmployeeShiftStatus.EarlyLeave;
+                }
+                // set the note for the employee if late then negative and positive if early leave and the value will be the time difference
+                empShift.EmployeeNote = empShift.Status switch
+                {
+                    EmployeeShiftStatus.Late => empShift.CheckIn.Value.Hour - empShift.Actual_CheckIn.Value.Hour,
+                    EmployeeShiftStatus.EarlyLeave => request.CheckOut.Hour - empShift.CheckOut.Value.Hour,
+                    _ => 0
+                };
+
+            }
+
+
             Domain.Entities.Attendence? attendence = await _attdenceRepository.FindAsync(x => x.EmployeeShiftID == empShift.ID, cancellationToken);
             attendence.EmployeePictureUrlCheckOut = uploadResult.Url.ToString();
             _employeeShiftRepository.Update(empShift);
@@ -63,7 +93,6 @@ internal class CheckOutCommandHandler(IEmployeeShiftRepository employeeShiftRepo
             catch (Exception ex)
             {
                 // Log the exception or handle it as necessary
-                Console.WriteLine($"File upload error: {ex.Message}");
                 return null;
             }
         }

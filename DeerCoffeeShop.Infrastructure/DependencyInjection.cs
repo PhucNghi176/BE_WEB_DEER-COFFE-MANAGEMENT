@@ -15,7 +15,7 @@ namespace DeerCoffeeShop.Infrastructure
             _ = services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
                 _ = options.UseSqlServer(
-                    configuration.GetConnectionString("Azure"),
+                    configuration.GetConnectionString("1"),
                     b =>
                     {
                         _ = b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);

@@ -10,7 +10,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByDay
 
         public int PageSize { get; set; }
 
-        public DateTime DateOfWork { get; set; }
+        public DateOnly DateOfWork { get; set; }
 
     }
 }

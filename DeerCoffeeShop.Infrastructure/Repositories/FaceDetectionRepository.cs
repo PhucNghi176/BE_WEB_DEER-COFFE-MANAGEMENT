@@ -113,11 +113,11 @@ public class FaceDetectionRepository : IFaceDetectionRepository
         {
             using FileStream stream = new(filePath, FileMode.Create);
             await image.CopyToAsync(stream, cancellationToken);
-            return filePath;
+            return "Success";
         }
-        catch (Exception ex)
+        catch 
         {
-            throw new Exception($"{ex.Message}");
+            return "Fail";
         }
     }
 }

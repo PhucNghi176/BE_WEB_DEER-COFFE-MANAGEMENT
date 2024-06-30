@@ -18,6 +18,11 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Create
         {
             Employee? employee = await _employeeRepository.FindAsync(x => x.ID == _currentUserService.UserId, cancellationToken);
             Restaurant? restaurant = await _restaurantRepository.FindAsync(x => x.ManagerID == employee.ManagerID, cancellationToken);
+            var IsLocked = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork == command.DateOfWork && x.RestaurantID == restaurant.ID && x.IsLocked == true, cancellationToken);
+            if (IsLocked.Count > 0)
+            {
+                return "This day is locked!";
+            }
             Domain.Entities.EmployeeShift empShift = new()
             {
                 RestaurantID = restaurant.ID,
@@ -29,6 +34,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Create
                 CheckOut = command.CheckOut,
                 Status = Domain.Enums.EmployeeShiftStatus.Absent,
                 IsOnTime = false,
+                IsDeleted = false,
             };
 
             _employeeShiftRepository.Add(empShift);

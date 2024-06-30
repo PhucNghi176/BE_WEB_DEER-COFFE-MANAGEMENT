@@ -7,8 +7,7 @@ using MediatR;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.GetByDay
 {
-    public class GetEmployeeShiftByDayQueryHandler(IEmployeeShiftRepository employeeShiftRepository, IEmployeeRepository employeeRepository
-                                                , IMapper mapper, ICurrentUserService currentUserService) : IRequestHandler<GetEmployeeShiftByDayQuery, PagedResult<EmployeeShiftDto>>
+    public class GetEmployeeShiftByDayQueryHandler(IEmployeeShiftRepository employeeShiftRepository, IEmployeeRepository employeeRepository, IMapper mapper, ICurrentUserService currentUserService) : IRequestHandler<GetEmployeeShiftByDayQuery, PagedResult<EmployeeShiftDto>>
     {
         private readonly IEmployeeShiftRepository _employeeShiftRepository = employeeShiftRepository;
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
@@ -20,7 +19,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByDay
         {
 
             IPagedResult<Domain.Entities.EmployeeShift> list = await _employeeShiftRepository.FindAllAsync(x => !x.IsDeleted
-            && x.DateOfWork.Day == query.DateOfWork.Day
+            && x.DateOfWork == query.DateOfWork
             && x.RestaurantID.Equals(_currentUserService.RestaurantID), query.PageNo, query.PageSize, cancellationToken);
             if (list.TotalCount == 0)
                 throw new NotFoundException("None employee shift was found!");
