@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using DeerCoffeeShop.Application.Common.Mappings;
 using DeerCoffeeShop.Application.Employees;
-using DeerCoffeeShop.Application.Shift;
 using DeerCoffeeShop.Domain.Enums;
 
 namespace DeerCoffeeShop.Application.EmployeeShift
 {
     public class EmployeeShiftDto() : IMapFrom<Domain.Entities.EmployeeShift>
     {
-        
+
         public EmployeeDto Employee { get; set; }
         public DateOnly DateOfWork { get; set; }
         public int Month { get; set; }
@@ -25,7 +24,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Entities.EmployeeShift, EmployeeShiftDto>();
+            _ = profile.CreateMap<Domain.Entities.EmployeeShift, EmployeeShiftDto>();
         }
 
         public static EmployeeShiftDto Create(

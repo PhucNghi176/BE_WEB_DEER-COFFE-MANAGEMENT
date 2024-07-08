@@ -8,11 +8,11 @@ namespace DeerCoffeeShop.Application.Employees.CreateEmployee
     {
         public CreateEmployeeCommandValidator()
         {
-            RuleFor(x => x).Custom((command, context) =>
+            _ = RuleFor(x => x).Custom((command, context) =>
             {
                 bool isError = false;
                 dynamic errorData = new ExpandoObject();
-                var errorDictionary = (IDictionary<string, object>)errorData;
+                IDictionary<string, object> errorDictionary = (IDictionary<string, object>)errorData;
                 if (string.IsNullOrEmpty(command.Email) || !IsValidEmail(command.Email))
                 {
                     errorDictionary["Email"] = "Email must be a valid email address.";
@@ -53,7 +53,7 @@ namespace DeerCoffeeShop.Application.Employees.CreateEmployee
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
+                System.Net.Mail.MailAddress addr = new(email);
                 return addr.Address == email;
             }
             catch

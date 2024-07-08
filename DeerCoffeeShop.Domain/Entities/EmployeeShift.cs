@@ -26,7 +26,7 @@ namespace DeerCoffeeShop.Domain.Entities
         [DataType(DataType.Time)]
         public DateTime? Actual_CheckOut { get; set; }
         [DataType(DataType.Time)]
-        public DateTime? TotalHours { get; set; }
+        public int? TotalHours { get; set; }
         public required bool IsOnTime { get; set; } = false;
         public required EmployeeShiftStatus Status { get; set; } = EmployeeShiftStatus.Absent;
         public int EmployeeNote { get; set; } = 0;
@@ -38,5 +38,6 @@ namespace DeerCoffeeShop.Domain.Entities
         public virtual Employee? NguoiXoa { get; set; }
         public bool IsDeleted { get; set; } = false;
         public bool IsReviewRequired { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
     }
 }

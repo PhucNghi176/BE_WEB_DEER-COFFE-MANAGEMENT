@@ -14,7 +14,7 @@ namespace DeerCoffeeShop.Application.Common.Behaviours
             }
             catch (Exception ex)
             {
-                var requestName = typeof(TRequest).Name;
+                string requestName = typeof(TRequest).Name;
 
                 logger.LogError(ex, "DeerCoffeeShop Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 

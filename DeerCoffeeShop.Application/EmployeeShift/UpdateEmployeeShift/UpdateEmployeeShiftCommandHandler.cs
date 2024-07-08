@@ -1,11 +1,6 @@
 ﻿using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
 {
@@ -15,7 +10,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
 
         public async Task<string> Handle(UpdateEmployeeShiftCommand command, CancellationToken cancellationToken)
         {
-            var foundObject = await _employeeShiftRepository.FindAsync(x => x.RestaurantID.Equals(command.RestaurantID)
+            Domain.Entities.EmployeeShift foundObject = await _employeeShiftRepository.FindAsync(x => x.RestaurantID.Equals(command.RestaurantID)
 
             && x.EmployeeID.Equals(command.EmployeeID)
             && x.DateOfWork.Equals(command.DateOfWork)
@@ -24,16 +19,12 @@ namespace DeerCoffeeShop.Application.EmployeeShift.UpdateEmployeeShift
             foundObject.Actual_CheckIn = command.ActualCheckIn;
             foundObject.Actual_CheckOut = command.ActualCheckOut;
 
-            if (!command.ActualCheckIn.HasValue && !command.ActualCheckOut.HasValue)
-                foundObject.Status = Domain.Enums.EmployeeShiftStatus.Absent;
+            foundObject.Status = !command.ActualCheckIn.HasValue && !command.ActualCheckOut.HasValue
+                ? Domain.Enums.EmployeeShiftStatus.Absent
+                : Domain.Enums.EmployeeShiftStatus.OnTime;
 
-
-
-            else
-                foundObject.Status = Domain.Enums.EmployeeShiftStatus.OnTime;
-
-            var totalHour = command.ActualCheckIn - command.ActualCheckOut;
-            var employeeNote = command.ActualCheckIn - foundObject.CheckIn;
+            TimeSpan? totalHour = command.ActualCheckIn - command.ActualCheckOut;
+            TimeSpan? employeeNote = command.ActualCheckIn - foundObject.CheckIn;
 
             // foundObject.TotalHours = foundObject.DateOfWork + totalHour;
             foundObject.EmployeeNote = employeeNote.Value.Hours;

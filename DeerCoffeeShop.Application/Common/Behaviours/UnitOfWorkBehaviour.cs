@@ -25,14 +25,14 @@ namespace DeerCoffeeShop.Application.Common.Behaviours
             // locks are released, while write-locks are maintained for the duration of the
             // transaction). Learn more on this approach for EF Core:
             // https://docs.microsoft.com/en-us/ef/core/saving/transactions#using-systemtransactions
-            using var transaction = new TransactionScope(TransactionScopeOption.Required,
+            using TransactionScope transaction = new(TransactionScopeOption.Required,
                 new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, TransactionScopeAsyncFlowOption.Enabled);
-            var response = await next();
+            TResponse? response = await next();
 
             // By calling SaveChanges at the last point in the transaction ensures that write-
             // locks in the database are created and then released as quickly as possible. This
             // helps optimize the application to handle a higher degree of concurrency.
-            await dataSource.SaveChangesAsync(cancellationToken);
+            _ = await dataSource.SaveChangesAsync(cancellationToken);
 
             // Commit transaction if everything succeeds, transaction will auto-rollback when
             // disposed if anything failed.

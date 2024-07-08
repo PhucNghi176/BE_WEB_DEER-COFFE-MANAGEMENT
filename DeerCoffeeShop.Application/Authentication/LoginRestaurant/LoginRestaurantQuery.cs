@@ -1,11 +1,6 @@
 ﻿using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Authentication.LoginRestaurant;
 
@@ -21,16 +16,12 @@ internal class LoginRestaurantQueryHandler(IRestaurantRepository restaurantRepos
 
     public async Task<string> Handle(LoginRestaurantQuery request, CancellationToken cancellationToken)
     {
-        var restaurant = await _restaurantRepository.FindAsync(_ => _.ID == request.RetaurantID, cancellationToken) ?? throw new NotFoundException("Restaurant not found");
-        var manager = await _employeeRepository.FindAsync(_ => _.ID == restaurant.ManagerID, cancellationToken);
-        if (manager == null)
-        {
-            throw new NotFoundException("Manager not found");
-        }
-        if (_employeeRepository.VerifyPassword(request.Password, manager.Password))
-        {
-            return restaurant.ID;
-        }
-        throw new IncorrectPasswordException("Password is incorrect");
+        Domain.Entities.Restaurant restaurant = await _restaurantRepository.FindAsync(_ => _.ID == request.RetaurantID, cancellationToken) ?? throw new NotFoundException("Restaurant not found");
+        Domain.Entities.Employee? manager = await _employeeRepository.FindAsync(_ => _.ID == restaurant.ManagerID, cancellationToken);
+        return manager == null
+            ? throw new NotFoundException("Manager not found")
+            : _employeeRepository.VerifyPassword(request.Password, manager.Password)
+            ? restaurant.ID
+            : throw new IncorrectPasswordException("Password is incorrect");
     }
 }

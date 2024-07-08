@@ -20,18 +20,18 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestautantChainByName
         {
             try
             {
-                var resChainList = await this._restaurantChainRepository.FindAllAsync(x => x.RestaurantChainName.Contains(request.resChainName) && x.IsDeleted == false,pageNo:request.pageNumber,pageSize:request.pageSize, cancellationToken);
-                if (resChainList.Count() == 0)
-                    throw new NotFoundException($"Not found any restaurantChain with name {request.resChainName}");
-                return PagedResult<RestaurantChainDTO>.Create(
-                            totalCount:resChainList.TotalCount,
-                            pageCount:resChainList.PageCount,
-                            pageSize:resChainList.PageSize,
-                            pageNumber:resChainList.PageNo,
-                            data:resChainList.MapToRestaurantChainDTOList(_mapper)
+                IPagedResult<Domain.Entities.RestaurantChain> resChainList = await this._restaurantChainRepository.FindAllAsync(x => x.RestaurantChainName.Contains(request.resChainName) && x.IsDeleted == false, pageNo: request.pageNumber, pageSize: request.pageSize, cancellationToken);
+                return resChainList.Count() == 0
+                    ? throw new NotFoundException($"Not found any restaurantChain with name {request.resChainName}")
+                    : PagedResult<RestaurantChainDTO>.Create(
+                            totalCount: resChainList.TotalCount,
+                            pageCount: resChainList.PageCount,
+                            pageSize: resChainList.PageSize,
+                            pageNumber: resChainList.PageNo,
+                            data: resChainList.MapToRestaurantChainDTOList(_mapper)
                     );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

@@ -19,7 +19,7 @@ namespace DeerCoffeeShop.Application.Restaurants.GetRestaurantIsLowEmp
         {
             try
             {
-                var restaurants = await this._restaurantRepository.FindAllAsync(x => x.TotalEmployees < 10 && x.IsDeleted == false, pageNo:request.pageNumber, pageSize:request.pageSize, cancellationToken);
+                IPagedResult<Restaurant> restaurants = await this._restaurantRepository.FindAllAsync(x => x.TotalEmployees < 10 && x.IsDeleted == false, pageNo: request.pageNumber, pageSize: request.pageSize, cancellationToken);
                 return PagedResult<RestaurantDTO>.Create
                 (
                 totalCount: restaurants.TotalCount,
@@ -29,7 +29,7 @@ namespace DeerCoffeeShop.Application.Restaurants.GetRestaurantIsLowEmp
                 data: restaurants.MapToRestaurantDTOList(_mapper)
                 );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
 
                 throw new Exception($"{ex.Message}");

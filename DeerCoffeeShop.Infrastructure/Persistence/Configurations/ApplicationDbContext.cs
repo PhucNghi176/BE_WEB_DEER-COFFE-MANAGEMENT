@@ -19,18 +19,18 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
         public virtual DbSet<Form> Forms { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            _ = modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration(new RestaurantConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeShiftConfiguration());
-            modelBuilder.ApplyConfiguration(new AttendenceConfiguration());
+            _ = modelBuilder.ApplyConfiguration(new RestaurantConfiguration());
+            _ = modelBuilder.ApplyConfiguration(new EmployeeShiftConfiguration());
+            _ = modelBuilder.ApplyConfiguration(new AttendenceConfiguration());
             ConfigureModel(modelBuilder);
 
         }
         private static void ConfigureModel(ModelBuilder modelBuilder)
         {
             #region Employee
-            modelBuilder.Entity<Role>().HasData(
+            _ = modelBuilder.Entity<Role>().HasData(
                 new Role
                 {
                     ID = 1,
@@ -52,7 +52,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                     NguoiTaoID = "1",
                     NgayTao = DateTime.Now,
                 });
-            modelBuilder.Entity<Employee>().HasData(
+            _ = modelBuilder.Entity<Employee>().HasData(
                 new Employee
                 {
                     ID = "1",
@@ -134,7 +134,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                 });
             #endregion
             #region Form    
-            modelBuilder.Entity<Form>().HasData(
+            _ = modelBuilder.Entity<Form>().HasData(
             new Form
             {
                 ID = Guid.NewGuid().ToString(),
@@ -192,7 +192,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
             });
             #endregion
             #region RestaurantChain
-            modelBuilder.Entity<RestaurantChain>().HasData(
+            _ = modelBuilder.Entity<RestaurantChain>().HasData(
                 new RestaurantChain
                 {
                     ID = "ChuoiNhaHang1",
@@ -223,7 +223,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                 });
             #endregion
             #region Restaurant
-            modelBuilder.Entity<Restaurant>().HasData(
+            _ = modelBuilder.Entity<Restaurant>().HasData(
                 new Restaurant
                 {
                     ID = "NhaHang1",
@@ -265,10 +265,10 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                 });
             #endregion
             #region shift
-            modelBuilder.Entity<Shift>().HasData(
+            _ = modelBuilder.Entity<Shift>().HasData(
                                new Shift
                                {
-                                   ID=1,
+                                   ID = 1,
                                    Name = "Sang 07-15",
                                    ShiftStart = 7,
                                    ShiftEnd = 15,
@@ -279,7 +279,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                },
                                new Shift
                                {
-                                   ID=2,
+                                   ID = 2,
                                    Name = "Chieu 15-22",
                                    ShiftStart = 15,
                                    ShiftEnd = 22,
@@ -301,13 +301,13 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
 
             #endregion
             #region EmployeeShift
-            modelBuilder.Entity<EmployeeShift>().HasData(
+            _ = modelBuilder.Entity<EmployeeShift>().HasData(
                                new EmployeeShift
                                {
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang1",
-                                   
+
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -321,7 +321,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang2",
-                                   
+
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -335,7 +335,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "3",
                                    RestaurantID = "NhaHang3",
-                                   
+
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,
@@ -349,7 +349,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
                                    ID = Guid.NewGuid().ToString(),
                                    EmployeeID = "1",
                                    RestaurantID = "NhaHang1",
-                                   
+
                                    DateOfWork = DateOnly.FromDateTime(DateTime.Now),
                                    Month = DateTime.Now.Month,
                                    Year = DateTime.Now.Year,

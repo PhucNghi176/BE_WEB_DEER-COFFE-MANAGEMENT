@@ -14,10 +14,10 @@ namespace DeerCoffeeShop.API.Configuration
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddTransient<ICurrentUserService, CurrentUserService>();
-            services.AddTransient<JwtService>();
+            _ = services.AddTransient<ICurrentUserService, CurrentUserService>();
+            _ = services.AddTransient<JwtService>();
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-            services.AddHttpContextAccessor();
+            _ = services.AddHttpContextAccessor();
 
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
@@ -30,7 +30,7 @@ namespace DeerCoffeeShop.API.Configuration
             //            options.TokenValidationParameters.RoleClaimType = "role";
             //            options.SaveToken = true;
             //        });
-            services.AddAuthentication(options =>
+            _ = services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,7 +49,7 @@ namespace DeerCoffeeShop.API.Configuration
                     };
                 });
 
-            services.AddAuthorization(ConfigureAuthorization);
+            _ = services.AddAuthorization(ConfigureAuthorization);
 
             return services;
         }

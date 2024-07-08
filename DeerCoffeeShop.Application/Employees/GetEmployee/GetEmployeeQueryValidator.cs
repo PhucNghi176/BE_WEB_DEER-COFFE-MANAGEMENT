@@ -12,7 +12,7 @@ namespace DeerCoffeeShop.Application.Employees.GetEmployee
 
         public void Configure()
         {
-            RuleFor(x => x.EmployeeId)
+            _ = RuleFor(x => x.EmployeeId)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Employee must be not empty!");

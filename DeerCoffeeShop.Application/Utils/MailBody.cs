@@ -1,10 +1,3 @@
-using System.Net;
-using System.Net.Mail;
-using DeerCoffeeShop.Domain.Entities;
-using MailKit.Security;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
-
 namespace DeerCoffeeShop.Application.Utils
 {
     public static class MailBody
@@ -12,7 +5,7 @@ namespace DeerCoffeeShop.Application.Utils
 
         public static string getConfirmEmail(string userName, string userEmail, string address, string phoneNumber, string dateOfBirth, string companyName)
         {
-            var htmlTemplate = @"
+            string htmlTemplate = @"
                 <!DOCTYPE html>
                 <html lang='vi'>
                 <head>
@@ -154,7 +147,7 @@ namespace DeerCoffeeShop.Application.Utils
         }
         public static string getApprovedEmail(string userName, string userEmail, string companyName, DateTime date, string company_address)
         {
-            var htmlTemplate = @"
+            string htmlTemplate = @"
                 <!DOCTYPE html>
                 <html lang='vi'>
                 <head>
@@ -295,7 +288,7 @@ namespace DeerCoffeeShop.Application.Utils
         }
         public static string getPasswordEmail(string userName, string userID, DateTime date, string companyName)
         {
-            var htmlTemplate = @"
+            string htmlTemplate = @"
                 <!DOCTYPE html>
                 <html lang='vi'>
                 <head>

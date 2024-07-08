@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using DeerCoffeeShop.Application.Employees;
-using DeerCoffeeShop.Application.Shift;
-using DeerCoffeeShop.Domain.Entities;
 
 namespace DeerCoffeeShop.Application.EmployeeShift
 {
@@ -19,7 +17,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift
         public static EmployeeShiftDto MapToEmployeeShiftDto(this Domain.Entities.EmployeeShift form, IMapper mapper
             , EmployeeDto employee)
         {
-            var dto = mapper.Map<EmployeeShiftDto>(form);
+            EmployeeShiftDto dto = mapper.Map<EmployeeShiftDto>(form);
             dto.Employee = employee;
 
             return dto;

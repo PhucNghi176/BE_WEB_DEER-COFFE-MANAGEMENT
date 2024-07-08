@@ -22,15 +22,15 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByEmployeeId
 
         public async Task<PagedResult<EmployeeShiftDto>> Handle(GetEmployeeShiftByEmployeeIdQuery query, CancellationToken cancellationToken)
         {
-            var list = await _employeeShiftRepository.FindAllAsync(x => !x.IsDeleted, query.PageNo, query.PageSize, cancellationToken);
+            IPagedResult<Domain.Entities.EmployeeShift> list = await _employeeShiftRepository.FindAllAsync(x => !x.IsDeleted, query.PageNo, query.PageSize, cancellationToken);
             if (list.TotalCount == 0)
                 throw new NotFoundException("None employee shift was found!");
 
-            var employee = await _employeeRepository.FindAllToDictionaryAsync(x => x.NgayXoa == null || x.NguoiXoaID == null,
+            Dictionary<string, EmployeeDto> employee = await _employeeRepository.FindAllToDictionaryAsync(x => x.NgayXoa == null || x.NguoiXoaID == null,
                  x => x.ID, x => x.MapToEmployeeDto(_mapper, EmployeeRole.EmployeeRoleDictionary), cancellationToken);
 
 
-            var shift = await _shiftRepository.FindAllToDictionaryAsync(x => x.IsActive == true, x => x.ID, x => x.MapToShiftDto(_mapper), cancellationToken);
+            Dictionary<int, ShiftDto> shift = await _shiftRepository.FindAllToDictionaryAsync(x => x.IsActive == true, x => x.ID, x => x.MapToShiftDto(_mapper), cancellationToken);
 
             return PagedResult<EmployeeShiftDto>.Create
                 (
@@ -38,7 +38,7 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetByEmployeeId
                     pageCount: list.PageCount,
                     pageSize: list.PageSize,
                     pageNumber: list.PageNo,
-                    data: list.MapToListEmployeeShiftDto(_mapper,  employee)
+                    data: list.MapToListEmployeeShiftDto(_mapper, employee)
                 );
         }
     }

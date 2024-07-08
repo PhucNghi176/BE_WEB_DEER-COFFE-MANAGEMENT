@@ -1,11 +1,6 @@
 ﻿using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.RestaurantChains.InactiveRestaurantChain
 {
@@ -20,15 +15,15 @@ namespace DeerCoffeeShop.Application.RestaurantChains.InactiveRestaurantChain
         {
             try
             {
-                var restaurantChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.ID) && x.IsDeleted == true, cancellationToken);
-                if(restaurantChain == null) 
+                Domain.Entities.RestaurantChain? restaurantChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.ID) && x.IsDeleted == true, cancellationToken);
+                if (restaurantChain == null)
                     throw new NotFoundException($"RestaurantChain ID {request.ID} was not found");
                 restaurantChain.IsDeleted = false;
                 this._restaurantChainRepository.Update(restaurantChain);
-                await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
                 return $"RestaurantChain ID {request.ID} is Active now";
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

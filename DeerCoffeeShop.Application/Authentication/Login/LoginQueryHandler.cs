@@ -10,8 +10,8 @@ namespace DeerCoffeeShop.Application.Authentication.Login
 
         public async Task<LoginDTO> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
-            var user = await _employeeRepository.FindAsync(_ => _.ID == request.EmployeeID && _.NgayXoa == null, cancellationToken) ?? throw new NotFoundException("User not found");
-            var isTrue = _employeeRepository.VerifyPassword(request.Password, user.Password);
+            Domain.Entities.Employee user = await _employeeRepository.FindAsync(_ => _.ID == request.EmployeeID && _.NgayXoa == null, cancellationToken) ?? throw new NotFoundException("User not found");
+            bool isTrue = _employeeRepository.VerifyPassword(request.Password, user.Password);
             if (!isTrue)
             {
                 throw new IncorrectPasswordException("Password is incorrect");
@@ -24,10 +24,10 @@ namespace DeerCoffeeShop.Application.Authentication.Login
                 3 => "Employee",
                 _ => "Owner",
             };
-            var refresh = sender.Send(new RefreshTokenCommand(), cancellationToken).Result.Token;
+            string refresh = sender.Send(new RefreshTokenCommand(), cancellationToken).Result.Token;
             user.RefreshToken = refresh;
-            var restaurant = await _restaurantRepository.FindAsync(_ => _.ManagerID == user.ID, cancellationToken);
-            await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            Domain.Entities.Restaurant? restaurant = await _restaurantRepository.FindAsync(_ => _.ManagerID == user.ID, cancellationToken);
+            _ = await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             return LoginDTO.Create(user.ID, Role, refresh, restaurant?.ID);
         }

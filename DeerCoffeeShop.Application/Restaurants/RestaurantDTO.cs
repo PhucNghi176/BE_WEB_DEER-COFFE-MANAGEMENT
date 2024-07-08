@@ -19,7 +19,7 @@ namespace DeerCoffeeShop.Application.Restaurants
         public RestaurantDTO() { }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Restaurant, RestaurantDTO>();
+            _ = profile.CreateMap<Restaurant, RestaurantDTO>();
         }
         public static RestaurantDTO Create(string ID, string resChainID, string resName,
                                            string resAddress, int totalEmp, EmployeeDto employeeDto)

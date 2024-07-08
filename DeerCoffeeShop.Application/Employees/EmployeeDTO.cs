@@ -23,7 +23,7 @@ namespace DeerCoffeeShop.Application.Employees
         {
             return new EmployeeDto
             {
-                
+
                 ID = iD,
                 FullName = fullName,
                 Email = email,
@@ -51,8 +51,8 @@ namespace DeerCoffeeShop.Application.Employees
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Employee, EmployeeDto>();
-            
+            _ = profile.CreateMap<Employee, EmployeeDto>();
+
         }
     }
 };

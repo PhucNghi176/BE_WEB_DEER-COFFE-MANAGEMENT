@@ -8,13 +8,13 @@ namespace DeerCoffeeShop.Application.Authentication.Refrestoken.GenerateRefreshT
     {
         public Task<RefreshToken> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var randome = new Byte[64];
-            using (var rng = RandomNumberGenerator.Create())
+            byte[] randome = new Byte[64];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(randome);
             }
             string token = Convert.ToBase64String(randome);
-            var refreshToken = new RefreshToken
+            RefreshToken refreshToken = new()
             {
                 Token = token,
                 Expired = DateTime.Now.AddDays(7)

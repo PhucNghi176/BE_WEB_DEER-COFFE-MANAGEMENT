@@ -12,12 +12,12 @@ namespace DeerCoffeeShop.Application.Shift.Create
 
         public async Task<string> Handle(CreateShiftCommand request, CancellationToken cancellationToken)
         {
-            var checkDuplicated = await _shiftRepostory.AnyAsync(x => x.Name.Equals(request.shift_name)
+            bool checkDuplicated = await _shiftRepostory.AnyAsync(x => x.Name.Equals(request.shift_name)
             && x.ShiftStart.CompareTo(request.shift_start) == 0 && x.ShiftEnd.CompareTo(request.shift_end) == 0,
             cancellationToken);
             if (checkDuplicated)
                 throw new DuplicatedObjectException("This shift has been exist");
-            var shift = new Domain.Entities.Shift()
+            Domain.Entities.Shift shift = new()
             {
                 Name = request.shift_name,
                 ShiftStart = request.shift_start,

@@ -14,8 +14,7 @@ namespace DeerCoffeeShop.API.Services
         public string? RestaurantID => _claimsPrincipal?.FindFirst("RestaurantID")?.Value;
         public async Task<bool> AuthorizeAsync(string policy)
         {
-            if (_claimsPrincipal == null) return false;
-            return (await authorizationService.AuthorizeAsync(_claimsPrincipal, policy)).Succeeded;
+            return _claimsPrincipal != null && (await authorizationService.AuthorizeAsync(_claimsPrincipal, policy)).Succeeded;
         }
 
         public async Task<bool> IsInRoleAsync(string role)

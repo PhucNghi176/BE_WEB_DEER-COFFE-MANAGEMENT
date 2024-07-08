@@ -2,13 +2,7 @@
 using DeerCoffeeShop.Application.Common.Mappings;
 using DeerCoffeeShop.Application.Employees;
 using DeerCoffeeShop.Application.Shift;
-using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.EmployeeShift
 {
@@ -30,12 +24,14 @@ namespace DeerCoffeeShop.Application.EmployeeShift
         public int EmployeeNote { get; set; }
         public string? Note { get; set; }
         public EmployeeDto Employee { get; set; }
+        public string? CheckInUrl { get; set; }
+        public string? CheckOutUrl { get; set; } 
 
-        public static EmployeeShiftDtoV2 Create(string ID,string RestaurantID, EmployeeDto employee,
+        public static EmployeeShiftDtoV2 Create(string ID, string RestaurantID, EmployeeDto employee,
              DateOnly dateOfWork, int month, int year, DateTime checkIn, DateTime checkOut, DateTime? actual_CheckIn
             , DateTime? actual_CheckOut, DateTime? totalHours, bool isOnTime, EmployeeShiftStatus status
-            , int employeeNote, string? note)
-        {
+            , int employeeNote, string? note, string? CheckInUrl, string? CheckOutUrl)
+        {                                    
             return new EmployeeShiftDtoV2()
             {
                 ID = ID,
@@ -53,12 +49,14 @@ namespace DeerCoffeeShop.Application.EmployeeShift
                 Status = status,
                 EmployeeNote = employeeNote,
                 Note = note,
+                CheckInUrl = CheckInUrl,
+                CheckOutUrl = CheckOutUrl
             };
         }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Entities.EmployeeShift, EmployeeShiftDtoV2>();
+            _ = profile.CreateMap<Domain.Entities.EmployeeShift, EmployeeShiftDtoV2>();
         }
     }
 }

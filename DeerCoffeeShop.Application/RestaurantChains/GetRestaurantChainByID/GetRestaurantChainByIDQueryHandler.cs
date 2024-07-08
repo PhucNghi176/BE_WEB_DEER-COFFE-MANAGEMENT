@@ -2,11 +2,6 @@
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByID
 {
@@ -23,12 +18,12 @@ namespace DeerCoffeeShop.Application.RestaurantChains.GetRestaurantChainByID
         {
             try
             {
-                var resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
-                if (resChain == null)
-                    throw new NotFoundException($"Not found restaurantChain with ID {request.resChainID}");
-                return resChain.MapToRestaurantChainDTO(_mapper);
+                Domain.Entities.RestaurantChain? resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
+                return resChain == null
+                    ? throw new NotFoundException($"Not found restaurantChain with ID {request.resChainID}")
+                    : resChain.MapToRestaurantChainDTO(_mapper);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

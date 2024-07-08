@@ -48,5 +48,6 @@ namespace DeerCoffeeShop.Domain.Entities
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiryTime { get; set; }
         public bool IsMailed { get; set; }
+        public string DeviceToken { get; set; } = "";
     }
 }

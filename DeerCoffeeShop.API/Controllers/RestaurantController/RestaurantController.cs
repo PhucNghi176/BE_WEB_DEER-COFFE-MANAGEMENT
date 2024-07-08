@@ -2,22 +2,17 @@
 using DeerCoffeeShop.API.Controllers.ResponseTypes;
 using DeerCoffeeShop.Application.Authentication.LoginRestaurant;
 using DeerCoffeeShop.Application.Common.Pagination;
-using DeerCoffeeShop.Application.Common.Security;
 using DeerCoffeeShop.Application.Restaurants;
 using DeerCoffeeShop.Application.Restaurants.AddManagerToRestaurant;
 using DeerCoffeeShop.Application.Restaurants.CreateRestaurant;
 using DeerCoffeeShop.Application.Restaurants.DeleteRestaurant;
 using DeerCoffeeShop.Application.Restaurants.FillterByReschainAndManagerID;
 using DeerCoffeeShop.Application.Restaurants.Get;
-using DeerCoffeeShop.Application.Restaurants.GetAllRestaurantIsactive;
-using DeerCoffeeShop.Application.Restaurants.GetRestaurantByDeactive;
-using DeerCoffeeShop.Application.Restaurants.GetRestaurantIsLowEmp;
 using DeerCoffeeShop.Application.Restaurants.GetRestautantByID;
 using DeerCoffeeShop.Application.Restaurants.InactiveRestaurant;
 using DeerCoffeeShop.Application.Restaurants.UpdateRestautant;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Mime;
 
 
@@ -39,7 +34,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                         CreateRestaurantCommand command,
                                         CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             var response = new
             {
                 Message = "Create Successfully",
@@ -61,7 +56,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                                 [FromRoute] Guid ID,
                                                 CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetRestaurantByIDQuery(ID), cancellationToken);
+            RestaurantDTO result = await _mediator.Send(new GetRestaurantByIDQuery(ID), cancellationToken);
             return Ok(new JsonResponse<RestaurantDTO>(result));
         }
 
@@ -78,10 +73,10 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                                     [FromRoute] int pageSize, [FromRoute] int pageNumber, [FromRoute] string managerID, [FromRoute] string resChainID,
                                                     CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new FillterByReschainAndManagerIDQuery(pageNumber, pageSize, managerID, resChainID), cancellationToken);
+            PagedResult<RestaurantDTO> result = await _mediator.Send(new FillterByReschainAndManagerIDQuery(pageNumber, pageSize, managerID, resChainID), cancellationToken);
             return Ok(new JsonResponse<PagedResult<RestaurantDTO>>(result));
         }
-       
+
 
         // PUT api/<RestaurantController>
         [HttpPut("Inactive-Restaurant")]
@@ -96,7 +91,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                 InactiveRestaurantCommand command,
                                 CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
         // PUT api/<RestaurantController>
@@ -112,7 +107,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                             UpdateRestaurantCommand command,
                                             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -129,7 +124,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                             AddManagerToRestaurantCommand command,
                                             CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -146,7 +141,7 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                                                 [FromQuery] string ID,
                                                 CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new DeleteRestaurantCommand(ID), cancellationToken);
+            string result = await _mediator.Send(new DeleteRestaurantCommand(ID), cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
         [HttpPost("Login-Restaurant")]
@@ -154,13 +149,13 @@ namespace DeerCoffeeShop.API.Controllers.RestaurantController
                        LoginRestaurantQuery query,
                                   CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(query, cancellationToken);
+            string result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
         [HttpGet]
         public async Task<ActionResult<string>> GetAll([FromQuery] GetRestaurantQuery query, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(query, cancellationToken);
+            PagedResult<RestaurantDTO> result = await _mediator.Send(query, cancellationToken);
             var response = new
             {
                 Message = "Get All Successfully",

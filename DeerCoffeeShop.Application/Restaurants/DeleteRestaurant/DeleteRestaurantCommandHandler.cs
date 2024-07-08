@@ -21,21 +21,21 @@ namespace DeerCoffeeShop.Application.Restaurants.DeleteRestaurant
         {
             try
             {
-                var restaurant = await _restaurantRepository.FindAsync(x => x.ID.Equals(request.resID) && !x.IsDeleted, cancellationToken) ?? throw new NotFoundException($"Not found restaurant ID: {request.resID}");
+                Domain.Entities.Restaurant restaurant = await _restaurantRepository.FindAsync(x => x.ID.Equals(request.resID) && !x.IsDeleted, cancellationToken) ?? throw new NotFoundException($"Not found restaurant ID: {request.resID}");
                 //var manager = await this._employeeRepository.FindAsync(x => x.ID.Equals(restaurant.ManagerID),cancellationToken);
-                var listStaff = await _employeeRepository.FindAllAsync(x => x.ManagerID.Equals(restaurant.ManagerID), cancellationToken);
-                foreach (var employee in listStaff)
+                List<Domain.Entities.Employee> listStaff = await _employeeRepository.FindAllAsync(x => x.ManagerID.Equals(restaurant.ManagerID), cancellationToken);
+                foreach (Domain.Entities.Employee employee in listStaff)
                 {
                     employee.ManagerID = null;
                     _employeeRepository.Update(employee);
                 }
-                await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await _employeeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
                 restaurant.NgayXoa = DateTime.UtcNow;
                 restaurant.NguoiXoaID = _currentUserService.UserId;
                 restaurant.IsDeleted = true;
                 _restaurantRepository.Update(restaurant);
-                await _restaurantRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await _restaurantRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
                 return $"success delete restaurant ID : {request.resID}";
             }
             catch (Exception ex)

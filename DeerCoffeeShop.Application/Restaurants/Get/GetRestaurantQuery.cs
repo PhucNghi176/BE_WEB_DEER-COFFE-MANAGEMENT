@@ -5,11 +5,6 @@ using DeerCoffeeShop.Application.Common.Security;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Restaurants.Get;
 [Authorize(Roles = "Admin")]
@@ -56,8 +51,8 @@ internal class GetRestaurantQueryHandler(IRestaurantRepository restaurantReposit
             return query;
 
         }
-        var list = await _restaurantRepository.FindAllAsync(request.PageNumber, request.PageSize, queryOptions, cancellationToken);
-        foreach (var item in list)
+        IPagedResult<Restaurant> list = await _restaurantRepository.FindAllAsync(request.PageNumber, request.PageSize, queryOptions, cancellationToken);
+        foreach (Restaurant item in list)
         {
             item.Manager = await _employeeRepository.FindAsync(x => x.ID == item.ManagerID, cancellationToken);
         }

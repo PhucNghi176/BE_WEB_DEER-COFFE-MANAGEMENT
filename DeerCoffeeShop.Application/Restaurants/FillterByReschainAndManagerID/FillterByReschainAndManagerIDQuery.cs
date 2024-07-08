@@ -6,10 +6,10 @@ namespace DeerCoffeeShop.Application.Restaurants.FillterByReschainAndManagerID
 {
     public class FillterByReschainAndManagerIDQuery : IRequest<PagedResult<RestaurantDTO>>, IQuery
     {
-        public int pageNumber {  get; set; }
+        public int pageNumber { get; set; }
         public int pageSize { get; set; }
         public string managerID { get; set; }
-        public string resChainID {  get; set; }
+        public string resChainID { get; set; }
         public FillterByReschainAndManagerIDQuery() { }
         public FillterByReschainAndManagerIDQuery(int pageNumber, int pageSize,
                                                   string managerID, string resChainID)

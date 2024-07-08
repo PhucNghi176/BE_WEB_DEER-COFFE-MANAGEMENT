@@ -13,15 +13,15 @@ namespace DeerCoffeeShop.Application.Restaurants.CreateRestaurant
         }
         private void ConfiguraValidatorRule()
         {
-            RuleFor(x => x.RestaurantAddress)
+            _ = RuleFor(x => x.RestaurantAddress)
                 .NotEmpty().NotNull().WithMessage("please fill in a HQAdress.")
                 .MaximumLength(300).WithMessage("the restairant was too long try again.");
-            RuleFor(x => x.RestaurantName)
+            _ = RuleFor(x => x.RestaurantName)
                 .NotEmpty().NotNull().WithMessage("please fill in a restaurant's name.")
                 .MaximumLength(50).WithMessage("the restaurant's name was too long try again.");
-            RuleFor(x => x.ManagerID)
+            _ = RuleFor(x => x.ManagerID)
                 .NotEmpty().NotNull().WithMessage("please chose your restaurant owner.");
-            RuleFor(x => x.RestaurantChainID)
+            _ = RuleFor(x => x.RestaurantChainID)
                 .NotEmpty().NotNull().WithMessage("please chose your restaurant chain owner.");
         }
     }

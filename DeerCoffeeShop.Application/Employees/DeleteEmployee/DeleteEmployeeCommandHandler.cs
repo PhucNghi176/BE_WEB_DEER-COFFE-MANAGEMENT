@@ -13,7 +13,7 @@ namespace DeerCoffeeShop.Application.Employees.DeleteEmployee
 
         public async Task<string> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
         {
-            var foundObject = await _employeeRepository.FindAsync(x => x.ID.Equals(request.EmployeeID)
+            Domain.Entities.Employee? foundObject = await _employeeRepository.FindAsync(x => x.ID.Equals(request.EmployeeID)
             );
 
             if (foundObject == null) throw new NotFoundException("None employee shift of restaurant was found!");

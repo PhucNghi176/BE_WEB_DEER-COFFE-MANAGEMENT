@@ -2,11 +2,6 @@
 using DeerCoffeeShop.Domain.Constants;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Employees.GetEmployeeInfo
 {
@@ -21,14 +16,14 @@ namespace DeerCoffeeShop.Application.Employees.GetEmployeeInfo
 
         public async Task<EmployeeDto> Handle(GetEmployeeInfoQuery request, CancellationToken cancellationToken)
         {
-            var employee = await _employeeRepository.FindAsync(_ => _.ID == request.EmployeeID && _.NgayXoa == null, cancellationToken);
+            Domain.Entities.Employee? employee = await _employeeRepository.FindAsync(_ => _.ID == request.EmployeeID && _.NgayXoa == null, cancellationToken);
             if (employee.RoleID == 2)
             {
-                var ResID = await _restaurantRepository.FindAsync(_ => _.ManagerID == employee.ID && _.NgayXoa == null, cancellationToken);
+                Domain.Entities.Restaurant? ResID = await _restaurantRepository.FindAsync(_ => _.ManagerID == employee.ID && _.NgayXoa == null, cancellationToken);
                 return EmployeeDto.CreateDtoLogin(employee.FullName, EmployeeRole.EmployeeRoleDictionary[employee.RoleID], employee.AvatarUrl, ResID?.ID);
             }
 
-            return EmployeeDto.CreateDtoLogin(employee.FullName, EmployeeRole.EmployeeRoleDictionary[employee.RoleID], employee.AvatarUrl,null);
+            return EmployeeDto.CreateDtoLogin(employee.FullName, EmployeeRole.EmployeeRoleDictionary[employee.RoleID], employee.AvatarUrl, null);
         }
     }
 }

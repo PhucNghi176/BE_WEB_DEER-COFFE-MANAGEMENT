@@ -1,10 +1,8 @@
 ﻿using DeerCoffeeShop.Application.Common.Behaviours;
 using DeerCoffeeShop.Application.Common.Validation;
-using DeerCoffeeShop.Domain.Entities;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
 
 namespace DeerCoffeeShop.Application
 {
@@ -12,19 +10,19 @@ namespace DeerCoffeeShop.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), lifetime: ServiceLifetime.Transient);
-            services.AddMediatR(cfg =>
+            _ = services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), lifetime: ServiceLifetime.Transient);
+            _ = services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-                cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
-                cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
-                cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
-                cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-                cfg.AddOpenBehavior(typeof(UnitOfWorkBehaviour<,>));
+                _ = cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                _ = cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+                _ = cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
+                _ = cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+                _ = cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+                _ = cfg.AddOpenBehavior(typeof(UnitOfWorkBehaviour<,>));
             });
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<IValidatorProvider, ValidatorProvider>();
+            _ = services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            _ = services.AddScoped<IValidatorProvider, ValidatorProvider>();
 
             return services;
         }

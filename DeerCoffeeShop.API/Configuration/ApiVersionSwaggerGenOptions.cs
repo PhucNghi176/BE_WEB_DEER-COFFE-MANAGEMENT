@@ -11,7 +11,7 @@ namespace DeerCoffeeShop.API.Configuration
 
         public void Configure(SwaggerGenOptions options)
         {
-            foreach (var description in _provider.ApiVersionDescriptions.OrderByDescending(o => o.ApiVersion))
+            foreach (ApiVersionDescription? description in _provider.ApiVersionDescriptions.OrderByDescending(o => o.ApiVersion))
             {
                 options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
             }
@@ -19,7 +19,7 @@ namespace DeerCoffeeShop.API.Configuration
 
         private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
         {
-            var info = new OpenApiInfo()
+            OpenApiInfo info = new()
             {
                 Title = "Deer Coffee Shop API",
                 Version = description.ApiVersion.ToString()

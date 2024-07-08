@@ -24,19 +24,10 @@ namespace DeerCoffeeShop.Application.Employees.GetAllEmployee
 
         public async Task<PagedResult<EmployeeDto>> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
         {
-            var role = await _currentUserService.IsInRoleAsync("Admin");
-            IPagedResult<Employee>? list = null;
-            if (role)
-            {
-                list = await _employeeRepository.FindAllAsync(x => !x.IsDeleted && x.ManagerID == _currentUserService.UserId, request.PageNumber, request.PageSize, cancellationToken);
-
-            }
-            else
-            {
-                list = await _employeeRepository.FindAllAsync(x => !x.IsDeleted && x.RoleID == 2, request.PageNumber, request.PageSize, cancellationToken);
-            }
-
-
+            bool role = await _currentUserService.IsInRoleAsync("Admin");
+            IPagedResult<Employee>? list = role
+                ? await _employeeRepository.FindAllAsync(x => !x.IsDeleted && x.ManagerID == _currentUserService.UserId, request.PageNumber, request.PageSize, cancellationToken)
+                : await _employeeRepository.FindAllAsync(x => !x.IsDeleted && x.RoleID == 2, request.PageNumber, request.PageSize, cancellationToken);
             return PagedResult<EmployeeDto>.Create(totalCount: list.TotalCount,
                                pageCount: list.PageCount,
                                               pageSize: list.PageSize,

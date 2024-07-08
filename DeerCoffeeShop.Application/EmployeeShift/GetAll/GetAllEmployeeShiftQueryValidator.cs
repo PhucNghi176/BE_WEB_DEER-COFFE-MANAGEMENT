@@ -11,17 +11,17 @@ namespace DeerCoffeeShop.Application.EmployeeShift.GetAll
 
         public void Configure()
         {
-            RuleFor(x => x.PageNo)
+            _ = RuleFor(x => x.PageNo)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Page number must not be null!");
 
-            RuleFor(x => x.PageSize)
+            _ = RuleFor(x => x.PageSize)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Page size must not be null!");
 
-            RuleFor(x => x.RestaurantId)
+            _ = RuleFor(x => x.RestaurantId)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Restaurant must not be null!");

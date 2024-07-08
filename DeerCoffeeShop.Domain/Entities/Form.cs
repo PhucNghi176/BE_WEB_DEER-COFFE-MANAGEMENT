@@ -1,5 +1,4 @@
 ﻿using DeerCoffeeShop.Domain.Entities.Base;
-using DeerCoffeeShop.Domain.Enums;
 
 namespace DeerCoffeeShop.Domain.Entities;
 
@@ -11,5 +10,6 @@ public class Form : Entity
     public string? Content { get; set; }
     public DateTime? Date { get; set; }
     public bool IsApproved { get; set; } = false;
-
+    public string Response { get; set; } = "";
+    public string ShiftID { get; set; }= "";    
 }

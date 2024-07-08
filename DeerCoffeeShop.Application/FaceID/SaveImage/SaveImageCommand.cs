@@ -1,13 +1,7 @@
 ﻿using DeerCoffeeShop.Application.Common.Interfaces;
-using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.FaceID.SaveImage;
 
@@ -29,7 +23,7 @@ internal class SaveImageCommandHandler : IRequestHandler<SaveImageCommand, strin
     public async Task<string> Handle(SaveImageCommand request, CancellationToken cancellationToken)
     {
         // Construct the path to the employee's folder
-        var employeeFolderPath = Path.Combine(_rootPath, "TrainedFaces", request.EmployeeID);
+        string employeeFolderPath = Path.Combine(_rootPath, "TrainedFaces", request.EmployeeID);
 
         return await _faceDetectionRepository.SaveImage(request.Image, request.EmployeeID, employeeFolderPath, cancellationToken);
 

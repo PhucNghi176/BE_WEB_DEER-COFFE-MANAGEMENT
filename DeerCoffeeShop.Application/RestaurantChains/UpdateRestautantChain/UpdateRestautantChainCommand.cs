@@ -5,7 +5,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.UpdateRestautantChain
 {
     public class UpdateRestautantChainCommand : IRequest<string>, ICommand
     {
-        public string resChainID {  get; set; }
+        public string resChainID { get; set; }
         public string RestaurantChain_AdminID { get; set; }
         public string RestaurantChainName { get; set; }
         public string RestaurantChainHQAddress { get; set; }

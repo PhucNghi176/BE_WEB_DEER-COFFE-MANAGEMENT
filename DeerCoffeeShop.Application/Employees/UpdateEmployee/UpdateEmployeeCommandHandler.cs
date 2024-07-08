@@ -13,7 +13,7 @@ namespace DeerCoffeeShop.Application.Employees.UpdateEmployee
 
         public async Task<string> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
         {
-            var foundObject = await _employeeRepository.FindAsync(x => x.ID.Equals(command.EmployeeID)
+            Domain.Entities.Employee? foundObject = await _employeeRepository.FindAsync(x => x.ID.Equals(command.EmployeeID)
             );
             if (foundObject == null)
                 throw new NotFoundException("None shift was found!");

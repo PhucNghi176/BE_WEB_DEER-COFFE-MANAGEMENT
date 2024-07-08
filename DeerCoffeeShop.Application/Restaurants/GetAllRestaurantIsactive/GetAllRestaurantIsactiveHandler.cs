@@ -3,11 +3,6 @@ using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Restaurants.GetAllRestaurantIsactive
 {
@@ -24,10 +19,10 @@ namespace DeerCoffeeShop.Application.Restaurants.GetAllRestaurantIsactive
         {
             try
             {
-                var restaurantList = await this._restaurantRepository.FindAllAsync(x => x.IsDeleted == false, request.pageNumber, request.pageSize, cancellationToken);
+                IPagedResult<Domain.Entities.Restaurant> restaurantList = await this._restaurantRepository.FindAllAsync(x => x.IsDeleted == false, request.pageNumber, request.pageSize, cancellationToken);
                 if (restaurantList.Count() == 0)
                     throw new NotFoundException("Not found any restauratn with the condition.");
-                var result = restaurantList.MapToRestaurantDTOList(_mapper);
+                List<RestaurantDTO> result = restaurantList.MapToRestaurantDTOList(_mapper);
                 return PagedResult<RestaurantDTO>.Create(
                                 totalCount: restaurantList.TotalCount,
                                 pageCount: restaurantList.PageCount,
@@ -36,7 +31,7 @@ namespace DeerCoffeeShop.Application.Restaurants.GetAllRestaurantIsactive
                                 data: result
                     );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

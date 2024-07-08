@@ -1,5 +1,4 @@
 ﻿using DeerCoffeeShop.Application.Common.Interfaces;
-using DeerCoffeeShop.Domain.Common.Exceptions;
 using DeerCoffeeShop.Domain.Entities;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
@@ -17,9 +16,14 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Create
 
         public async Task<string> Handle(CreateEmployeeShiftCommand command, CancellationToken cancellationToken)
         {
-            var employee = await _employeeRepository.FindAsync(x => x.ID == _currentUserService.UserId, cancellationToken);
-            var restaurant = await _restaurantRepository.FindAsync(x => x.ManagerID == employee.ManagerID, cancellationToken);
-            var empShift = new Domain.Entities.EmployeeShift
+            Employee? employee = await _employeeRepository.FindAsync(x => x.ID == _currentUserService.UserId, cancellationToken);
+            Restaurant? restaurant = await _restaurantRepository.FindAsync(x => x.ManagerID == employee.ManagerID, cancellationToken);
+            var IsLocked = await _employeeShiftRepository.FindAllAsync(x => x.DateOfWork == command.DateOfWork && x.RestaurantID == restaurant.ID && x.IsLocked == true, cancellationToken);
+            if (IsLocked.Count > 0)
+            {
+                return "This day is locked!";
+            }
+            Domain.Entities.EmployeeShift empShift = new()
             {
                 RestaurantID = restaurant.ID,
                 EmployeeID = _currentUserService.UserId,
@@ -30,11 +34,12 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Create
                 CheckOut = command.CheckOut,
                 Status = Domain.Enums.EmployeeShiftStatus.Absent,
                 IsOnTime = false,
+                IsDeleted = false,
             };
 
             _employeeShiftRepository.Add(empShift);
-            await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            var attdence = new Attendence
+            _ = await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            Attendence attdence = new()
             {
                 EmployeeShiftID = empShift.ID,
                 EmployeePictureUrlCheckIn = "",

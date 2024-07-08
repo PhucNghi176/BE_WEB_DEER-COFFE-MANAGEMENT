@@ -13,7 +13,7 @@ namespace DeerCoffeeShop.Application.RestaurantChains.DeleteRestaurantChain
         private readonly ICurrentUserService _currentUserService;
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IEmployeeRepository _employeeRepository;
-        public DeleteRestaurantChainCommandHandler(IRestaurantChainRepository restaurantChainRepository, ICurrentUserService currentUserService, 
+        public DeleteRestaurantChainCommandHandler(IRestaurantChainRepository restaurantChainRepository, ICurrentUserService currentUserService,
                                                    IRestaurantRepository restaurantRepository, IEmployeeRepository employeeRepository,
                                                    ISender mediator)
         {
@@ -27,22 +27,22 @@ namespace DeerCoffeeShop.Application.RestaurantChains.DeleteRestaurantChain
         {
             try
             {
-                var resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
+                Domain.Entities.RestaurantChain? resChain = await this._restaurantChainRepository.FindAsync(x => x.ID.Equals(request.resChainID) && x.IsDeleted == false, cancellationToken);
                 if (resChain == null)
                     throw new NotFoundException($"Not found restaurantChain ID {request.resChainID}");
-                var resList = await this._restaurantRepository.FindAllAsync(x => x.RestaurantChainID.Equals(resChain.ID), cancellationToken);
-                foreach (var res in resList)
+                List<Domain.Entities.Restaurant> resList = await this._restaurantRepository.FindAllAsync(x => x.RestaurantChainID.Equals(resChain.ID), cancellationToken);
+                foreach (Domain.Entities.Restaurant res in resList)
                 {
-                   await _metiator.Send(new DeleteRestaurantCommand(res.ID), cancellationToken);
+                    _ = await _metiator.Send(new DeleteRestaurantCommand(res.ID), cancellationToken);
                 }
                 resChain.NgayXoa = DateTime.UtcNow;
                 resChain.NguoiXoaID = this._currentUserService.UserId;
                 resChain.IsDeleted = true;
                 this._restaurantChainRepository.Update(resChain);
-                await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                _ = await this._restaurantChainRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
                 return $"Deleted restaurantChain ID {request.resChainID}.";
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

@@ -8,7 +8,7 @@ namespace DeerCoffeeShop.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
-            builder.HasOne(r => r.RestaurantChain)
+            _ = builder.HasOne(r => r.RestaurantChain)
                 .WithMany()
                 .HasForeignKey(r => r.RestaurantChainID)
                 .OnDelete(DeleteBehavior.NoAction);

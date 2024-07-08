@@ -1,5 +1,4 @@
-﻿using Azure;
-using DeerCoffeeShop.Api.Controllers.ResponseTypes;
+﻿using DeerCoffeeShop.Api.Controllers.ResponseTypes;
 using DeerCoffeeShop.API.Controllers.ResponseTypes;
 using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Application.Common.Security;
@@ -27,14 +26,14 @@ namespace DeerCoffeeShop.API.Controllers.Shift
 
         public async Task<ActionResult<PagedResult<ShiftDto>>> GetAllShift([FromQuery] GetAllShiftQuery query, CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(query, cancellationToken);
+            PagedResult<ShiftDto> result = await _mediator.Send(query, cancellationToken);
             var respond = new
             {
                 Message = "Get all shift successfully",
                 Data = result
             };
             return Ok(respond);
-        } 
+        }
 
         [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
@@ -46,7 +45,7 @@ namespace DeerCoffeeShop.API.Controllers.Shift
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<JsonResponse<string>>> CreateNewShift([FromBody] CreateShiftCommand command, CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -60,7 +59,7 @@ namespace DeerCoffeeShop.API.Controllers.Shift
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<JsonResponse<string>>> UpdateShift([FromBody] UpdateShiftCommand command, CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
 
@@ -74,7 +73,7 @@ namespace DeerCoffeeShop.API.Controllers.Shift
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<JsonResponse<string>>> RemoveShift([FromBody] DeleteShiftCommand command, CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            string result = await _mediator.Send(command, cancellationToken);
             return Ok(new JsonResponse<string>(result));
         }
     }

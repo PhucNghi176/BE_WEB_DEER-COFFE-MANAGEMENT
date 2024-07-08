@@ -2,11 +2,6 @@
 using DeerCoffeeShop.Application.Common.Pagination;
 using DeerCoffeeShop.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeerCoffeeShop.Application.Restaurants.GetRestaurantByDeactive
 {
@@ -23,7 +18,7 @@ namespace DeerCoffeeShop.Application.Restaurants.GetRestaurantByDeactive
         {
             try
             {
-                var restaurantList = await this._restaurantRepository.FindAllAsync(x => x.IsDeleted == true, pageNo:request.pageNumber, pageSize:request.pageSize, cancellationToken);
+                IPagedResult<Domain.Entities.Restaurant> restaurantList = await this._restaurantRepository.FindAllAsync(x => x.IsDeleted == true, pageNo: request.pageNumber, pageSize: request.pageSize, cancellationToken);
                 return PagedResult<RestaurantDTO>.Create(
                             totalCount: restaurantList.TotalCount,
                             pageCount: restaurantList.PageCount,
@@ -32,7 +27,7 @@ namespace DeerCoffeeShop.Application.Restaurants.GetRestaurantByDeactive
                             data: restaurantList.MapToRestaurantDTOList(_mapper)
                     );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }

@@ -20,7 +20,7 @@ namespace DeerCoffeeShop.Application.Common.Pagination
         /// <returns>A single page of DTO elements</returns>
         public static PagedResult<TDto> MapToPagedResult<TDomain, TDto>(this IPagedResult<TDomain> pagedResult, Func<TDomain, TDto> mapFunc)
         {
-            var data = pagedResult.Select(mapFunc).ToList();
+            List<TDto> data = pagedResult.Select(mapFunc).ToList();
 
             return PagedResult<TDto>.Create(
                 totalCount: pagedResult.TotalCount,

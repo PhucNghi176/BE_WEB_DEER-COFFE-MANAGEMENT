@@ -6,7 +6,7 @@ namespace DeerCoffeeShop.API.Configuration
     {
         public static IServiceCollection ConfigureApiVersioning(this IServiceCollection services)
         {
-            services.AddApiVersioning(options =>
+            _ = services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;

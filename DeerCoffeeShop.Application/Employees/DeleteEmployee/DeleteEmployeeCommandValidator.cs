@@ -11,7 +11,7 @@ namespace DeerCoffeeShop.Application.Employees.DeleteEmployee
 
         public void Configure()
         {
-            RuleFor(x => x.EmployeeID)
+            _ = RuleFor(x => x.EmployeeID)
                 .NotEmpty()
                 .NotNull()
                 .WithMessage("Employee must not be empty!");
