@@ -12,14 +12,10 @@ namespace DeerCoffeeShop.Application.EmployeeShift.Delete
 
         public async Task<string> Handle(DeleteEmployeeShiftCommand request, CancellationToken cancellationToken)
         {
-            Domain.Entities.EmployeeShift foundObject = await _employeeShiftRepository.FindAsync(x => x.EmployeeID.Equals(request.EmployeeID)
-            && x.RestaurantID.Equals(request.RestaurantID)
+            var shift = await _employeeShiftRepository.FindAsync(x => x.ID == request.ShiftID, cancellationToken)?? throw new NotFoundException("Shift not found");
+            _employeeShiftRepository.Remove(shift);
 
-            && x.NguoiXoaID == null) ?? throw new NotFoundException("None employee shift of restaurant was found!");
 
-            foundObject.EmployeeID = null;
-            foundObject.NguoiXoaID = _currentUserService.UserId;
-            foundObject.NgayXoa = DateTime.Now;
 
             return await _employeeShiftRepository.UnitOfWork.SaveChangesAsync(cancellationToken) > 0 ? "Xóa thành công" : "Xóa thất bại";
         }

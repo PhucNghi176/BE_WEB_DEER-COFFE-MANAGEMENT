@@ -13,11 +13,13 @@ public class FormDto : IMapFrom<Form>
     public string? Content { get; set; }
     public DateTime? Date { get; set; }
     public bool IsApproved { get; set; }
+    public string Response { get; set; }
+
     public void Mapping(Profile profile)
     {
         _ = profile.CreateMap<Form, FormDto>();
     }
-    public static FormDto Create(string FormID, EmployeeDto employee, Domain.Enums.FormTypeEnum formType, string content, DateTime date, bool isApproved)
+    public static FormDto Create(string FormID, EmployeeDto employee, Domain.Enums.FormTypeEnum formType, string content, DateTime date, bool isApproved,string Response)
     {
         return new FormDto
         {
@@ -26,7 +28,8 @@ public class FormDto : IMapFrom<Form>
             FormType = formType,
             Content = content,
             Date = date,
-            IsApproved = isApproved
+            IsApproved = isApproved,
+            Response=Response
         };
     }
 

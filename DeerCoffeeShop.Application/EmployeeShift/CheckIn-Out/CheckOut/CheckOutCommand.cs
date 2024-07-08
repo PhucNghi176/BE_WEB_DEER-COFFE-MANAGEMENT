@@ -75,26 +75,24 @@ internal class CheckOutCommandHandler(IEmployeeShiftRepository employeeShiftRepo
     }
     private async Task<CloudinaryDotNet.Actions.ImageUploadResult> UploadEmployeeImage(IFormFile imageFile)
     {
-        using (Stream stream = imageFile.OpenReadStream())
+        using Stream stream = imageFile.OpenReadStream();
+        ImageUploadParams uploadParams = new()
         {
-            ImageUploadParams uploadParams = new()
-            {
-                File = new FileDescription(imageFile.FileName, stream),
-                UseFilename = true,
-                UniqueFilename = false,
-                Folder = "EmployeeCheckIn",
-                Overwrite = true
-            };
+            File = new FileDescription(imageFile.FileName, stream),
+            UseFilename = true,
+            UniqueFilename = false,
+            Folder = "EmployeeCheckIn",
+            Overwrite = true
+        };
 
-            try
-            {
-                return await cloudinary.UploadAsync(uploadParams);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as necessary
-                return null;
-            }
+        try
+        {
+            return await cloudinary.UploadAsync(uploadParams);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as necessary
+            return null;
         }
 
     }

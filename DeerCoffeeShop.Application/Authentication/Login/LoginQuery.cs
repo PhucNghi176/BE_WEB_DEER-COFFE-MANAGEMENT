@@ -7,6 +7,4 @@ public record LoginQuery(string EmployeeID, string Password) : IRequest<LoginDTO
 {
     public string EmployeeID { get; } = EmployeeID;
     public string Password { get; } = Password;
-
-
 }

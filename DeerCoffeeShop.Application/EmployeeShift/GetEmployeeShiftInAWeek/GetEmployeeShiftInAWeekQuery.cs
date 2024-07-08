@@ -14,12 +14,13 @@ public record GetEmployeeShiftInAWeekQuery : IRequest<List<EmployeeShiftDtoV2>>,
     public DateOnly Date { get; set; }
     public bool IsMonth { get; set; }
 }
-internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository employeeShiftRepository, ICurrentUserService currentUserService, IMapper mapper, IRestaurantRepository restaurantRepository, IEmployeeRepository employeeRepository) : IRequestHandler<GetEmployeeShiftInAWeekQuery, List<EmployeeShiftDtoV2>>
+internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository employeeShiftRepository, ICurrentUserService currentUserService, IMapper mapper, IRestaurantRepository restaurantRepository, IEmployeeRepository employeeRepository, IAttdenceRepository attdenceRepository) : IRequestHandler<GetEmployeeShiftInAWeekQuery, List<EmployeeShiftDtoV2>>
 {
     private readonly IEmployeeShiftRepository _employeeShiftRepository = employeeShiftRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IRestaurantRepository _restaurantRepository = restaurantRepository;
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
+    private readonly IAttdenceRepository _attdenceRepository = attdenceRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<List<EmployeeShiftDtoV2>> Handle(GetEmployeeShiftInAWeekQuery request, CancellationToken cancellationToken)
@@ -47,7 +48,8 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
         }
         else
         {
-            employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.Month == request.Date.Month && x.RestaurantID == ManagerIDOfRestaurant.ID, cancellationToken);
+            Employee? User = await _employeeRepository.FindAsync(x => x.ID == UserID, cancellationToken);
+            employeeShifts = await _employeeShiftRepository.FindAllAsync(x => x.Month == request.Date.Month && x.RestaurantID == User.ManagerID, cancellationToken);
         }
 
         // Retrieve employee details
@@ -55,13 +57,14 @@ internal class GetEmployeeShiftInAWeekQueryHandler(IEmployeeShiftRepository empl
         {
             item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
         }
-        //var task = employeeShifts.Select(async item =>
-        //{
-        //    item.Employee = await _employeeRepository.FindAsync(x => x.ID == item.EmployeeID, cancellationToken);
-        //}
-        // );
-        //await Task.WhenAll(task);
-        return _mapper.Map<List<EmployeeShiftDtoV2>>(employeeShifts);
+
+        var map = _mapper.Map<List<EmployeeShiftDtoV2>>(employeeShifts);
+
+        foreach (var item in map)
+        {
+            var attdence = await _attdenceRepository.FindAsync(x => x.EmployeeShiftID == item.ID, cancellationToken);
+        }
+        return map;
 
     }
 

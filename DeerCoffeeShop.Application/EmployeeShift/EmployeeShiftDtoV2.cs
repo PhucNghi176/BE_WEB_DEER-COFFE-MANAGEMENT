@@ -24,12 +24,14 @@ namespace DeerCoffeeShop.Application.EmployeeShift
         public int EmployeeNote { get; set; }
         public string? Note { get; set; }
         public EmployeeDto Employee { get; set; }
+        public string? CheckInUrl { get; set; }
+        public string? CheckOutUrl { get; set; } 
 
         public static EmployeeShiftDtoV2 Create(string ID, string RestaurantID, EmployeeDto employee,
              DateOnly dateOfWork, int month, int year, DateTime checkIn, DateTime checkOut, DateTime? actual_CheckIn
             , DateTime? actual_CheckOut, DateTime? totalHours, bool isOnTime, EmployeeShiftStatus status
-            , int employeeNote, string? note)
-        {
+            , int employeeNote, string? note, string? CheckInUrl, string? CheckOutUrl)
+        {                                    
             return new EmployeeShiftDtoV2()
             {
                 ID = ID,
@@ -47,6 +49,8 @@ namespace DeerCoffeeShop.Application.EmployeeShift
                 Status = status,
                 EmployeeNote = employeeNote,
                 Note = note,
+                CheckInUrl = CheckInUrl,
+                CheckOutUrl = CheckOutUrl
             };
         }
 

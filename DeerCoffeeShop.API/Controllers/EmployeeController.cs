@@ -2,6 +2,7 @@
 using DeerCoffeeShop.API.Services;
 using DeerCoffeeShop.Application.Authentication.Login;
 using DeerCoffeeShop.Application.Employees;
+using DeerCoffeeShop.Application.Employees.AddDeviceToken;
 using DeerCoffeeShop.Application.Employees.CreateEmployee;
 using DeerCoffeeShop.Application.Employees.DeleteEmployee;
 using DeerCoffeeShop.Application.Employees.GetAllEmployee;
@@ -80,6 +81,16 @@ public class EmployeeController(ISender sender, JwtService _jwtService) : BaseCo
         {
             Message = "Get All Successfully",
             Data = result
+        };
+        return Ok(response);
+    }
+    [HttpPost("add-token")]
+    public async Task<ActionResult<string>> AddDeviceToken(AddDeviceTokenCommand command, CancellationToken cancellationToken)
+    {
+        string result = await _sender.Send(command, cancellationToken);
+        var response = new
+        {
+            Message = result,
         };
         return Ok(response);
     }

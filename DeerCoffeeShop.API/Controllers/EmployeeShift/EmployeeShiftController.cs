@@ -12,6 +12,7 @@ using DeerCoffeeShop.Application.EmployeeShift.GetByDay;
 using DeerCoffeeShop.Application.EmployeeShift.GetByEmployeeId;
 using DeerCoffeeShop.Application.EmployeeShift.GetEmployeeShiftInAWeek;
 using DeerCoffeeShop.Application.EmployeeShift.GetNeededReviewShift;
+using DeerCoffeeShop.Application.EmployeeShift.GetShiftByID;
 using DeerCoffeeShop.Application.EmployeeShift.LockDay;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -210,6 +211,17 @@ public class EmployeeShiftController(ISender sender) : BaseController(sender)
         var respond = new
         {
             Message = "Lock successfully",
+            Data = result
+        };
+        return Ok(respond);
+    }
+    [HttpGet("getbyid")]
+    public async Task<ActionResult<JsonResponse<EmployeeShiftDtoV2>>> GetShiftByID([FromQuery] GetShiftByIDQuery query, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(query, cancellationToken);
+        var respond = new
+        {
+            Message = "Get successfully",
             Data = result
         };
         return Ok(respond);
